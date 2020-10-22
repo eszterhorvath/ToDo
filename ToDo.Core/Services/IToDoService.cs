@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ToDo.Core.Services
 {
     public interface IToDoService
     {
-        void AddEntry(string title, string description);
-        void RemoveEntry(string title);
-        List<Models.ToDo> LoadEntries();
+        Task<List<Models.ToDo>> GetTodosAsync();
+        Task<Models.ToDo> GetTodoAsync(int id);
+        Task<int> SaveTodoAsync(Models.ToDo todo);
+        Task<int> DeleteTodo(Models.ToDo todo);
     }
 }

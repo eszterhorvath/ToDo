@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using MvvmCross;
 using MvvmCross.ViewModels;
@@ -12,7 +13,8 @@ namespace ToDo.Core
     {
         public override void Initialize()
         {
-            Mvx.IoCProvider.RegisterType<IToDoService, ToDoService>();
+            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Todos.db3");
+            Mvx.IoCProvider.RegisterSingleton<IToDoService>(new ToDoService(dbPath));
 
             RegisterAppStart<ToDoViewModel>();
         }

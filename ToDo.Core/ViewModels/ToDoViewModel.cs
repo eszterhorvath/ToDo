@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using MvvmCross.Commands;
 using MvvmCross.ViewModels;
 using ToDo.Core.Services;
 
@@ -14,7 +16,13 @@ namespace ToDo.Core.ViewModels
         {
             _todoService = todoService;
 
-            _toDos = _todoService.LoadEntries();
+            LoadTodos();
+        }
+
+        public override void ViewAppeared()
+        {
+            base.ViewAppeared();
+            LoadTodos();
         }
 
         private List<Models.ToDo> _toDos;
@@ -28,26 +36,18 @@ namespace ToDo.Core.ViewModels
             }
         }
 
-        public void AddTodo(string title, string description)
+        public async void RemoveTodo(Models.ToDo toDoItem)
         {
-            var entry = new Models.ToDo()
-            {
-                Title = title,
-                Description = description
-            };
+            ToDos.Remove(toDoItem);
 
-            ToDos.Add(entry);
+            await _todoService.DeleteTodo(toDoItem);
 
-            _todoService.AddEntry(title, description);
+            await LoadTodos();
         }
 
-        public void RemoveTodo(string title)
+        public async Task LoadTodos()
         {
-            ToDos.Remove(
-                ToDos.Find(x => x.Title.Equals(title))
-                );
-
-            _todoService.RemoveEntry(title);
+            ToDos = await _todoService.GetTodosAsync();
         }
     }
 }

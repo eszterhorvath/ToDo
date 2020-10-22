@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:MvxContentPage  x:TypeArguments="viewModels:AddViewModel"
+                       xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
+                       xmlns:mvx="clr-namespace:MvvmCross.Forms.Bindings;assembly=MvvmCross.Forms"
+                       xmlns:viewModels="clr-namespace:ToDo.Core.ViewModels;assembly=ToDo.Core"
+                       x:Class="ToDo.UI.Views.AddView"
+                       Title="Add new todo item">
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="Title"/>
+            <Entry x:Name="TitleEntry" Text="{Binding ToDoItem.Title, Mode=TwoWay}"/>
+            <Label Text="Description"/>
+            <Entry x:Name="DescriptionEntry" Text="{Binding ToDoItem.Description, Mode=TwoWay}" />
+
+            <Button x:Name="AddButton" Clicked="OnButtonClicked" Text="Add" Margin="10"/>
+        </StackLayout>
+    </ContentPage.Content>
+</views:MvxContentPage>

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Core", "ToDo.Core\ToDo.Core.csproj", "{7E86FCC2-BC35-4626-9DDB-11E59F19C3C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo.Core", "ToDo.Core\ToDo.Core.csproj", "{7E86FCC2-BC35-4626-9DDB-11E59F19C3C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.UI", "ToDo.UI\ToDo.UI.csproj", "{42E52DB4-EEC3-4039-8B90-714577BEF0C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Droid", "ToDo.Droid\ToDo.Droid.csproj", "{7FD6F1CC-AAAA-4B80-B701-B2C58D747F50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,16 @@ Global
 		{7E86FCC2-BC35-4626-9DDB-11E59F19C3C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E86FCC2-BC35-4626-9DDB-11E59F19C3C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E86FCC2-BC35-4626-9DDB-11E59F19C3C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42E52DB4-EEC3-4039-8B90-714577BEF0C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42E52DB4-EEC3-4039-8B90-714577BEF0C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42E52DB4-EEC3-4039-8B90-714577BEF0C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42E52DB4-EEC3-4039-8B90-714577BEF0C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD6F1CC-AAAA-4B80-B701-B2C58D747F50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FD6F1CC-AAAA-4B80-B701-B2C58D747F50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FD6F1CC-AAAA-4B80-B701-B2C58D747F50}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7FD6F1CC-AAAA-4B80-B701-B2C58D747F50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FD6F1CC-AAAA-4B80-B701-B2C58D747F50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD6F1CC-AAAA-4B80-B701-B2C58D747F50}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

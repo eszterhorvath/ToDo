@@ -9,7 +9,7 @@
              Title="ToDo">
     <ContentPage.Content>
         <StackLayout>
-            <ListView mvx:Bi.nd="ItemsSource ToDos, Mode=TwoWay" HasUnevenRows="True" ItemSelected="OnItemSelected">
+            <ListView mvx:Bi.nd="ItemsSource ToDos, Mode=OneWay" HasUnevenRows="True" ItemSelected="OnItemSelected">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

@@ -16,14 +16,18 @@ namespace ToDo.Core.ViewModels
         public ToDoViewModel(IToDoService todoService)
         {
             _todoService = todoService;
-
-            LoadTodos();
         }
 
-        public override void ViewAppeared()
+        public override async Task Initialize()
+        {
+            await base.Initialize();
+            await LoadTodos();
+        }
+
+        public override async void ViewAppeared()
         {
             base.ViewAppeared();
-            LoadTodos();
+            await LoadTodos();
         }
 
         private List<Models.ToDo> _toDos;
@@ -37,6 +41,13 @@ namespace ToDo.Core.ViewModels
             }
         }
 
+        public async Task LoadTodos()
+        {
+            var todos = await _todoService.GetTodosAsync();
+            todos.Sort(new TodoComparer());
+            ToDos = todos;
+        }
+
         public async void RemoveTodo(Models.ToDo toDoItem)
         {
             ToDos.Remove(toDoItem);
@@ -46,19 +57,11 @@ namespace ToDo.Core.ViewModels
             await LoadTodos();
         }
 
-        public async Task LoadTodos()
-        {
-            ToDos = await _todoService.GetTodosAsync();
-            ToDos.Sort(new TodoComparer());
-        }
-
         public async void ChangeState(Models.ToDo toDoItem)
         {
-            Models.ToDo todo = await _todoService.GetTodoAsync(toDoItem.Id);
+            toDoItem.State = (toDoItem.State == State.Done) ? State.Pending : State.Done;
 
-            todo.State = (todo.State == State.Done) ? State.Pending : State.Done;
-
-            await _todoService.SaveTodoAsync(todo);
+            await _todoService.SaveTodoAsync(toDoItem);
 
             await LoadTodos();
         }

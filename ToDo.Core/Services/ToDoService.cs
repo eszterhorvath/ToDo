@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SQLite;
@@ -8,40 +9,62 @@ namespace ToDo.Core.Services
 {
     public class ToDoService : IToDoService
     {
-        readonly SQLiteAsyncConnection _database;
+        private readonly string _dbPath;
+        SQLiteAsyncConnection _database;
 
-        public ToDoService(string dbPath){
-            _database = new SQLiteAsyncConnection(dbPath);
-            _database.CreateTableAsync<Models.ToDo>().Wait();
+        public ToDoService(string dbPath)
+        {
+            _dbPath = dbPath;
         }
 
-        public Task<List<Models.ToDo>> GetTodosAsync()
+        private Task EnsureInitialized()
         {
-            return _database.Table<Models.ToDo>().ToListAsync();
+            if (_database != null)
+                return Task.CompletedTask;
+
+            _database = new SQLiteAsyncConnection(_dbPath);
+            _database.GetConnection().CreateTable<Models.ToDo>();
+
+            return Task.CompletedTask;
         }
 
-        public Task<Models.ToDo> GetTodoAsync(int id)
+        public async Task<List<Models.ToDo>> GetTodosAsync()
         {
-            return _database.Table<Models.ToDo>()
-                .Where(x => x.Id == id)
-                .FirstOrDefaultAsync();
+            await EnsureInitialized();
+
+            var c = _database.GetConnection();
+            var list = c.Table<Models.ToDo>().ToList();
+            return list;
         }
 
-        public Task<int> SaveTodoAsync(Models.ToDo todo)
+        public async Task<Models.ToDo> GetTodoAsync(int id)
         {
+            var list = await GetTodosAsync();
+
+            return list.FirstOrDefault(x => x.Id == id);
+        }
+
+        public async Task<int> SaveTodoAsync(Models.ToDo todo)
+        {
+            await EnsureInitialized();
+            var c = _database.GetConnection();
+
             if (todo.Id != 0)
             {
-                return _database.UpdateAsync(todo);
+                return c.Update(todo);
             }
             else
             {
-                return _database.InsertAsync(todo);
+                return c.Insert(todo);
             }
         }
 
-        public Task<int> DeleteTodo(Models.ToDo todo)
+        public async Task<int> DeleteTodo(Models.ToDo todo)
         {
-            return _database.DeleteAsync(todo);
+            await EnsureInitialized();
+            var c = _database.GetConnection();
+
+            return c.Delete(todo);
         }
     }
 }

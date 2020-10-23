@@ -25,6 +25,7 @@ namespace ToDo.Core.ViewModels
         {
             if (ToDoItem.Title != null)
             {
+                ToDoItem.State = State.Pending;
                 await _todoService.SaveTodoAsync(ToDoItem);
             }
         }

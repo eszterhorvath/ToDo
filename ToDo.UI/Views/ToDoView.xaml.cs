@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MvvmCross.Core.Parse.StringDictionary;
 using ToDo.Core.ViewModels;
 using ToDo.Core;
+using ToDo.Core.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -20,29 +21,17 @@ namespace ToDo.UI.Views
             InitializeComponent();
         }
 
-        async void OnButtonClicked(object sender, EventArgs e)
+        private async void OnButtonClicked(object sender, EventArgs e)
         {
             var addPage = new AddView();
 
             await Navigation.PushModalAsync(addPage);
         }
 
-        async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            if (e.SelectedItem != null)
-            {
-                bool sure = await DisplayAlert("Delete item", "Are you sure you want to delete this item?", "Yes",
-                    "No");
-
-                if (sure)
-                {
-                    ViewModel.RemoveTodo((Core.Models.ToDo) e.SelectedItem);
-                }
-                else
-                {
-                    ((ListView) sender).SelectedItem = null;
-                }
-            }
+            ViewModel.ChangeState((Core.Models.ToDo)e.SelectedItem);
         }
+        
     }
 }

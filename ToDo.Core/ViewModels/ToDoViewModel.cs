@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MvvmCross.Commands;
 using MvvmCross.ViewModels;
+using ToDo.Core.Models;
 using ToDo.Core.Services;
 
 namespace ToDo.Core.ViewModels
@@ -48,6 +49,18 @@ namespace ToDo.Core.ViewModels
         public async Task LoadTodos()
         {
             ToDos = await _todoService.GetTodosAsync();
+            ToDos.Sort(new TodoComparer());
+        }
+
+        public async void ChangeState(Models.ToDo toDoItem)
+        {
+            Models.ToDo todo = await _todoService.GetTodoAsync(toDoItem.Id);
+
+            todo.State = (todo.State == State.Done) ? State.Pending : State.Done;
+
+            await _todoService.SaveTodoAsync(todo);
+
+            await LoadTodos();
         }
     }
 }

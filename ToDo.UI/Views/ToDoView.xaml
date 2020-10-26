@@ -22,16 +22,16 @@
                                     <ColumnDefinition Width="85*"/>
                                     <ColumnDefinition Width="15*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" mvx:Bi.nd="Text Title, Mode=TwoWay" FontAttributes="Bold" LineBreakMode="WordWrap" />
-                                <Label Grid.Row="1" Grid.Column="0" mvx:Bi.nd="Text Description, Mode=TwoWay" LineBreakMode="WordWrap"/>
-                                <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" mvx:Bi.nd="Text State, Mode=TwoWay"
+                                <Label Grid.Row="0" Grid.Column="0" mvx:Bi.nd="Text Title, Mode=OneWay" FontAttributes="Bold" LineBreakMode="WordWrap" />
+                                <Label Grid.Row="1" Grid.Column="0" mvx:Bi.nd="Text Description, Mode=OneWay" LineBreakMode="WordWrap"/>
+                                <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" mvx:Bi.nd="Text State, Mode=OneWay"
                                        LineBreakMode="WordWrap" HorizontalTextAlignment="End" VerticalTextAlignment="Center"/>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button Clicked="OnButtonClicked" Text="New" Margin="10" />
+            <Button Command="{Binding AddTodoItemCommand, Mode=OneWay}" Text="New" Margin="10" />
     </StackLayout>
   </ContentPage.Content>
 </views:MvxContentPage>

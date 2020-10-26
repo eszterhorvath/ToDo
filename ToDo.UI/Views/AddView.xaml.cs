@@ -18,12 +18,5 @@ namespace ToDo.UI.Views
         {
             InitializeComponent();
         }
-
-        async void OnButtonClicked(object sender, EventArgs e)
-        {
-            ViewModel.AddTodo();
-
-            await Navigation.PopModalAsync();
-        }
     }
 }

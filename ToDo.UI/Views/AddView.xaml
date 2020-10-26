@@ -14,7 +14,7 @@
             <Label Text="Description"/>
             <Entry x:Name="DescriptionEntry" Text="{Binding ToDoItem.Description, Mode=TwoWay}" />
 
-            <Button x:Name="AddButton" Clicked="OnButtonClicked" Text="Add" Margin="10"/>
+            <Button x:Name="AddButton" Command="{Binding AddTodoItemCommand, Mode=OneWay}" Text="Add" Margin="10"/>
         </StackLayout>
     </ContentPage.Content>
 </views:MvxContentPage>

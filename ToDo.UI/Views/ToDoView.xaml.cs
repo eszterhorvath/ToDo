@@ -21,13 +21,6 @@ namespace ToDo.UI.Views
             InitializeComponent();
         }
 
-        private async void OnButtonClicked(object sender, EventArgs e)
-        {
-            var addPage = new AddView();
-
-            await Navigation.PushModalAsync(addPage);
-        }
-
         private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             ViewModel.ChangeState((Core.Models.ToDo)e.SelectedItem);

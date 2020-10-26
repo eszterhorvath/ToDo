@@ -38,7 +38,7 @@ namespace ToDo.Core.Models
             {
                 return -1;
             }
-            else if(t1.State == State.Done && t2.State == State.Pending)
+            else if (t1.State == State.Done && t2.State == State.Pending)
             {
                 return 1;
             }

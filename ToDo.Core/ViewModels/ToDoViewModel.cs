@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,8 +31,8 @@ namespace ToDo.Core.ViewModels
             await LoadTodos();
         }
 
-        private List<Models.ToDo> _toDos;
-        public List<Models.ToDo> ToDos
+        private ObservableCollection<Models.ToDo> _toDos;
+        public ObservableCollection<Models.ToDo> ToDos
         {
             get => _toDos;
             set
@@ -40,12 +41,13 @@ namespace ToDo.Core.ViewModels
                 RaisePropertyChanged();
             }
         }
-
         public async Task LoadTodos()
         {
-            var todos = await _todoService.GetTodosAsync();
-            todos.Sort(new TodoComparer());
-            ToDos = todos;
+            var todosList = await _todoService.GetTodosAsync();
+            todosList.Sort(new TodoComparer());
+
+            var todosCollection = new ObservableCollection<Models.ToDo>(todosList);
+            ToDos = todosCollection;
         }
 
         public async void RemoveTodo(Models.ToDo toDoItem)

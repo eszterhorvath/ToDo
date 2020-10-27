@@ -7,6 +7,7 @@
              xmlns:viewModels="clr-namespace:ToDo.Core.ViewModels;assembly=ToDo.Core"
              xmlns:behaviors="clr-namespace:ToDo.UI.Behaviors;assembly=ToDo.UI"
              x:Class="ToDo.UI.Views.ToDoView"
+             x:Name="ContentPage"
              Title="ToDo">
     <ContentPage.Content>
         <StackLayout>
@@ -18,6 +19,13 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem Command="{Binding Source={x:Reference ContentPage},
+                                    Path=BindingContext.DataContext.RemoveTodoItemCommand, Mode=OneWay}"
+                                          CommandParameter="{Binding .}"
+                                          Text="Delete"
+                                          IconImageSource="deleteIcon.png" />
+                            </ViewCell.ContextActions>
                             <Grid Padding="10">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />

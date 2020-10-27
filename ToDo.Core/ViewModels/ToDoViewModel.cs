@@ -49,7 +49,6 @@ namespace ToDo.Core.ViewModels
         }
 
         private ObservableCollection<Models.ToDo> _toDos;
-
         public ObservableCollection<Models.ToDo> ToDos
         {
             get => _toDos;
@@ -76,7 +75,7 @@ namespace ToDo.Core.ViewModels
             ToDos = todosCollection;
         }
 
-        private async Task RemoveTodo(Models.ToDo toDoItem)
+        internal async Task RemoveTodo(Models.ToDo toDoItem)
         {
             ToDos.Remove(toDoItem);
 

@@ -5,11 +5,16 @@
              xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
              xmlns:mvx="clr-namespace:MvvmCross.Forms.Bindings;assembly=MvvmCross.Forms"
              xmlns:viewModels="clr-namespace:ToDo.Core.ViewModels;assembly=ToDo.Core"
+             xmlns:behaviors="clr-namespace:ToDo.UI.Behaviors;assembly=ToDo.UI"
              x:Class="ToDo.UI.Views.ToDoView"
              Title="ToDo">
     <ContentPage.Content>
         <StackLayout>
-            <ListView mvx:Bi.nd="ItemsSource ToDos, Mode=OneWay" HasUnevenRows="True" ItemSelected="OnItemSelected">
+            <ListView mvx:Bi.nd="ItemsSource ToDos, Mode=OneWay" HasUnevenRows="True"
+                      SelectedItem="{Binding SelectedTodo, Mode=OneWay}">
+                <ListView.Behaviors>
+                    <behaviors:ItemSelectedToCommandBehavior Command="{Binding ChangeStateCommand, Mode=OneWay}"/>
+                </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

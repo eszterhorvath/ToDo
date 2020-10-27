@@ -20,11 +20,5 @@ namespace ToDo.UI.Views
         {
             InitializeComponent();
         }
-
-        private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            ViewModel.ChangeState((Core.Models.ToDo)e.SelectedItem);
-        }
-        
     }
 }

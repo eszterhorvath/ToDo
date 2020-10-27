@@ -31,17 +31,17 @@ namespace ToDo.Core.Services
         public async Task<List<Models.ToDo>> GetTodosAsync()
         {
             await EnsureInitialized();
-
             var c = _database.GetConnection();
-            var list = c.Table<Models.ToDo>().ToList();
-            return list;
+
+            return c.Table<Models.ToDo>().ToList();
         }
 
         public async Task<Models.ToDo> GetTodoAsync(int id)
         {
-            var list = await GetTodosAsync();
+            await EnsureInitialized();
+            var c = _database.GetConnection();
 
-            return list.FirstOrDefault(x => x.Id == id);
+            return c.Find<Models.ToDo>(x => x.Id == id);
         }
 
         public async Task<int> SaveTodoAsync(Models.ToDo todo)

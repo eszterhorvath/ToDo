@@ -21,6 +21,7 @@ namespace ToDo.Core.ViewModels
 
         public ICommand AddTodoItemCommand { get; }
         public ICommand ChangeStateCommand { get; }
+        public ICommand RemoveTodoItemCommand { get; }
 
         public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService)
         {
@@ -29,9 +30,10 @@ namespace ToDo.Core.ViewModels
 
             AddTodoItemCommand = new Command(
                 async () => await AddNewTodo());
-
             ChangeStateCommand = new Command(
                 async (selectedItem) => await ChangeState((Models.ToDo)selectedItem));
+            RemoveTodoItemCommand = new Command(
+                async (swipedItem) => await RemoveTodo((Models.ToDo)swipedItem));
         }
 
         public override async Task Initialize()

@@ -28,7 +28,7 @@ namespace ToDo.Core.ViewModels
             _navigationService = navigationService;
 
             AddTodoItemCommand = new Command(
-                async () => { await _navigationService.Navigate<AddViewModel>();});
+                async () => await AddNewTodo());
 
             ChangeStateCommand = new Command(
                 async (selectedItem) => await ChangeState((Models.ToDo)selectedItem));
@@ -65,7 +65,7 @@ namespace ToDo.Core.ViewModels
             set => _selectedTodo = null;
         }
 
-        public async Task LoadTodos()
+        private async Task LoadTodos()
         {
             var todosList = await _todoService.GetTodosAsync();
             todosList.Sort(new TodoComparer());
@@ -83,7 +83,12 @@ namespace ToDo.Core.ViewModels
             await LoadTodos();
         }
 
-        private async Task ChangeState(Models.ToDo toDoItem)
+        internal async Task AddNewTodo()
+        {
+            await _navigationService.Navigate<AddViewModel>();
+        }
+
+        internal async Task ChangeState(Models.ToDo toDoItem)
         {
             toDoItem.State = (toDoItem.State == State.Done) ? State.Pending : State.Done;
 

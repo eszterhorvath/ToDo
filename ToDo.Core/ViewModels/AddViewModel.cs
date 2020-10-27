@@ -29,7 +29,7 @@ namespace ToDo.Core.ViewModels
             AddTodoItemCommand = new Command(async () => await AddTodo());
         }
 
-        public async Task AddTodo()
+        internal async Task AddTodo()
         {
             if (ToDoItem.Title != null)
             {

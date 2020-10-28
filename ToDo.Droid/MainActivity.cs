@@ -23,8 +23,8 @@ namespace ToDo.Droid
     {
         protected override void OnCreate(Bundle bundle)
         {
-            base.OnCreate(bundle);
             UserDialogs.Init(this);
+            base.OnCreate(bundle);
         }
     }
 }

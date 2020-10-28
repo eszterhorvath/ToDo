@@ -16,13 +16,15 @@ namespace ToDo.Core.ViewModels
     {
         private readonly IToDoService _todoService;
         private readonly IMvxNavigationService _navigationService;
+        private readonly IUserDialogs _userDialogService;
 
         public ICommand SaveCommand { get; }
 
-        public EditViewModel(IToDoService todoService, IMvxNavigationService navigationService)
+        public EditViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
         {
             _todoService = todoService;
             _navigationService = navigationService;
+            _userDialogService = userDialogService;
 
             SaveCommand = new Command(async () => await SaveTodoAsync());
         }
@@ -56,7 +58,7 @@ namespace ToDo.Core.ViewModels
         {
             if (ToDoItem.Title == "")
             {
-                UserDialogs.Instance.Alert("Title cannot be empty!");
+                _userDialogService.Alert("Title cannot be empty!");
                 return;
             }
 

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:MvxContentPage x:TypeArguments="viewModels:EditViewModel"
+                      xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
+                      xmlns:viewModels="clr-namespace:ToDo.Core.ViewModels;assembly=ToDo.Core"
+                      xmlns:models="clr-namespace:ToDo.Core.Models;assembly=ToDo.Core"
+                      x:Class="ToDo.UI.Views.EditView"
+                      Title="Edit">
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="Title"/>
+            <Entry Text="{Binding ToDoItem.Title, Mode=TwoWay}" />
+            <Label Text="Description"/>
+            <Entry Text="{Binding ToDoItem.Description, Mode=TwoWay}" />
+            <Label Text="State"/>
+            <Picker SelectedItem="{Binding ToDoItemState, Mode=TwoWay}">
+                <Picker.Items>
+                    <x:String>Pending</x:String>
+                    <x:String>Done</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <Button x:Name="SaveButton" Command="{Binding SaveCommand, Mode=OneWay}" Text="Save" Margin="10"/>
+        </StackLayout>
+    </ContentPage.Content>
+</views:MvxContentPage>

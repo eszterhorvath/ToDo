@@ -33,7 +33,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task SaveTodoTest()
+        public async Task WhenSavingATodo_WithValidTitle_SavesTodoAndNavigatesBack()
         {
             // ARRANGE
             var todo = new Models.ToDo()
@@ -56,7 +56,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task SaveTodoWithoutTitleTest()
+        public async Task WhenSavingATodo_ThatHasNoTitleSet_CancelsSaveAndShowsAlert()
         {
             // ARRANGE
             var todo = new Models.ToDo()

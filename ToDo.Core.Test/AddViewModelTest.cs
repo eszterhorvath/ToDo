@@ -31,7 +31,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task AddTodoTest()
+        public async Task WhenAddingATodo_SavesTodoToDBAndNavigatesBack()
         {
             // ARRANGE
             var todo = new Models.ToDo()

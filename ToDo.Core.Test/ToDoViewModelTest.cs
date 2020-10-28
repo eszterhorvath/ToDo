@@ -30,7 +30,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task InitializeTest()
+        public async Task WhenInitializingToDoViewModel_LoadsTodosFromDB()
         {
             // ARRANGE
             var todos = new List<Models.ToDo>()
@@ -64,7 +64,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task ChangeStateTest()
+        public async Task WhenChangingStateOfATodo_ChangesTheStateAndReloadsTheTodos()
         {
             // ARRANGE
             var todoItem = new Models.ToDo()
@@ -84,7 +84,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task AddNewTodoTest()
+        public async Task WhenAddingNewTodo_NavigatesToAddViewModel()
         {
             // ARRANGE
             _navigationService.Setup(
@@ -99,7 +99,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task EditTodoTest()
+        public async Task WhenEditingATodo_NavigatesToEditViewModel()
         {
             // ARRANGE
             var todoItem = new Models.ToDo()

@@ -11,10 +11,15 @@
              Title="ToDo">
     <ContentPage.Content>
         <StackLayout>
+            <SearchBar Placeholder="Search todos...">
+                <SearchBar.Behaviors>
+                    <behaviors:SearchBarTextChangedToCommandBehavior Command="{Binding SearchTextChangedCommand, Mode=OneWay}"/>
+                </SearchBar.Behaviors>
+            </SearchBar>
             <ListView mvx:Bi.nd="ItemsSource ToDos, Mode=OneWay" HasUnevenRows="True"
                       SelectedItem="{Binding SelectedTodo, Mode=OneWay}">
                 <ListView.Behaviors>
-                    <behaviors:ItemSelectedToCommandBehavior Command="{Binding ChangeStateCommand, Mode=OneWay}"/>
+                    <behaviors:ListViewItemSelectedToCommandBehavior Command="{Binding ChangeStateCommand, Mode=OneWay}"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>

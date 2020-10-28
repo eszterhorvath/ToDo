@@ -25,6 +25,7 @@ namespace ToDo.Core.ViewModels
         public ICommand ChangeStateCommand { get; }
         public ICommand RemoveTodoItemCommand { get; }
         public ICommand EditTodoItemCommand { get; }
+        public ICommand SearchTextChangedCommand { get; }
 
         public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
         {
@@ -40,6 +41,8 @@ namespace ToDo.Core.ViewModels
                 async (swipedItem) => await RemoveTodo((Models.ToDo)swipedItem));
             EditTodoItemCommand = new Command(
                 async (swipedItem) => await EditTodo((Models.ToDo)swipedItem));
+            SearchTextChangedCommand = new Command(
+                async (query) => await SearchedTextChanged((string)query));
         }
 
         public override async Task Initialize()
@@ -64,6 +67,9 @@ namespace ToDo.Core.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public string SearchedString { get; set; }
+
 
         private Models.ToDo _selectedTodo;
         public Models.ToDo SelectedTodo
@@ -117,6 +123,42 @@ namespace ToDo.Core.ViewModels
             await _todoService.SaveTodoAsync(toDoItem);
 
             await LoadTodos();
+        }
+
+        internal async Task SearchTodos()
+        {
+            var todoList = await _todoService.GetTodosAsync();
+
+            var resultList = new List<Models.ToDo>();
+            foreach (var todo in todoList)
+            {
+                if (todo.Title.ToLower().Contains(SearchedString))
+                {
+                    resultList.Add(todo);
+                }
+                else if (!String.IsNullOrWhiteSpace(todo.Description) && todo.Description.ToLower().Contains(SearchedString))
+                {
+                    resultList.Add(todo);
+                }
+            }
+
+            var resultCollection = new ObservableCollection<Models.ToDo>(resultList);
+
+            ToDos = resultCollection;
+        }
+
+        internal async Task SearchedTextChanged(string query)
+        {
+            if (String.IsNullOrWhiteSpace(query))
+            {
+                await LoadTodos();
+                SearchedString = query;
+                return;
+            }
+
+            SearchedString = query.ToLower();
+            
+            await SearchTodos();
         }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Acr.UserDialogs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MvvmCross.Navigation;
@@ -19,14 +22,16 @@ namespace ToDo.Core.Test
         private ToDoViewModel _viewModel;
         private Mock<IToDoService> _todoService;
         private Mock<IMvxNavigationService> _navigationService;
+        private Mock<IUserDialogs> _userDialogService;
 
         [TestInitialize]
         public void SetUp()
         {
             _todoService = new Mock<IToDoService>();
             _navigationService = new Mock<IMvxNavigationService>();
+            _userDialogService = new Mock<IUserDialogs>();
 
-            _viewModel = new ToDoViewModel(_todoService.Object, _navigationService.Object);
+            _viewModel = new ToDoViewModel(_todoService.Object, _navigationService.Object, _userDialogService.Object);
         }
 
         [TestMethod]
@@ -118,6 +123,61 @@ namespace ToDo.Core.Test
             // ASSERT
             _navigationService.Verify(
                 s => s.Navigate<EditViewModel, Models.ToDo>(todoItem, null, default), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task WhenRemovingATodo_IfConfirmed_RemovesTheSelectedTodoAndReloadsTheTodos()
+        {
+            // ARRANGE
+            var todoItem = new Models.ToDo()
+            {
+                Id = 1,
+                Title = "Shopping",
+                Description = "Buy wine",
+                State = State.Pending
+            };
+
+            _viewModel.ToDos = new ObservableCollection<Models.ToDo>
+            {
+                todoItem
+            };
+
+            _userDialogService.Setup(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default)).ReturnsAsync(true);
+            _todoService.Setup(s => s.DeleteTodo(It.IsAny<Models.ToDo>())).ReturnsAsync(1);
+            _todoService.Setup(s => s.GetTodosAsync()).ReturnsAsync(new List<Models.ToDo>());
+
+            // ACT
+            await _viewModel.RemoveTodo(todoItem);
+
+            // ASSERT
+            _userDialogService.Verify(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default), Times.Once);
+            _todoService.Verify(s => s.DeleteTodo(It.IsAny<Models.ToDo>()), Times.Once);
+            _todoService.Verify(s => s.GetTodosAsync(), Times.Once());
+        }
+
+        [TestMethod]
+        public async Task WhenRemovingATodo_IfNotConfirmed_NotRemovesTheSelectedTodo()
+        {
+            // ARRANGE
+            var todoItem = new Models.ToDo()
+            {
+                Title = "Shopping",
+                Description = "Buy wine",
+                State = State.Pending
+            };
+
+            _userDialogService.Setup(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default)).ReturnsAsync(false);
+            _todoService.Setup(s => s.DeleteTodo(It.IsAny<Models.ToDo>())).ReturnsAsync(1);
+            _todoService.Setup(s => s.GetTodosAsync()).ReturnsAsync(new List<Models.ToDo>());
+
+
+            // ACT
+            await _viewModel.RemoveTodo(todoItem);
+
+            // ASSERT
+            _userDialogService.Verify(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default), Times.Once);
+            _todoService.Verify(s => s.DeleteTodo(It.IsAny<Models.ToDo>()), Times.Never);
+            _todoService.Verify(s => s.GetTodosAsync(), Times.Never);
         }
     }
 }

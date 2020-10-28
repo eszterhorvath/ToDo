@@ -43,10 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddViewModelTest.cs" />
+    <Compile Include="EditViewModelTest.cs" />
     <Compile Include="ToDoViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs">
+      <Version>7.1.0.462</Version>
+    </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.14.7</Version>
     </PackageReference>

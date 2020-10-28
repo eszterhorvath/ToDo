@@ -97,5 +97,27 @@ namespace ToDo.Core.Test
             _navigationService.Verify(
                 s => s.Navigate<AddViewModel>(null, default), Times.Once);
         }
+
+        [TestMethod]
+        public async Task EditTodoTest()
+        {
+            // ARRANGE
+            var todoItem = new Models.ToDo()
+            {
+                Title = "Shopping",
+                Description = "Buy wine",
+                State = State.Pending
+            };
+
+            _navigationService.Setup(
+                s => s.Navigate<EditViewModel, Models.ToDo>(todoItem, null, default)).ReturnsAsync(true);
+
+            // ACT
+            await _viewModel.EditTodo(todoItem);
+
+            // ASSERT
+            _navigationService.Verify(
+                s => s.Navigate<EditViewModel, Models.ToDo>(todoItem, null, default), Times.Once);
+        }
     }
 }

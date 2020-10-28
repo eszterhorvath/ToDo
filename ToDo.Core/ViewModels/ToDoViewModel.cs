@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
@@ -18,16 +19,18 @@ namespace ToDo.Core.ViewModels
     {
         private readonly IToDoService _todoService;
         private readonly IMvxNavigationService _navigationService;
+        private readonly IUserDialogs _userDialogService;
 
         public ICommand AddTodoItemCommand { get; }
         public ICommand ChangeStateCommand { get; }
         public ICommand RemoveTodoItemCommand { get; }
         public ICommand EditTodoItemCommand { get; }
 
-        public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService)
+        public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
         {
             _todoService = todoService;
             _navigationService = navigationService;
+            _userDialogService = userDialogService;
 
             AddTodoItemCommand = new Command(
                 async () => await AddNewTodo());
@@ -85,11 +88,21 @@ namespace ToDo.Core.ViewModels
 
         internal async Task RemoveTodo(Models.ToDo toDoItem)
         {
-            ToDos.Remove(toDoItem);
+            var confirmed = await _userDialogService.ConfirmAsync(new ConfirmConfig()
+            {
+                Message = "Are you sure you want to delete this item?",
+                OkText = "Delete",
+                CancelText = "Cancel"
+            });
 
-            await _todoService.DeleteTodo(toDoItem);
+            if (confirmed)
+            {
+                ToDos.Remove(toDoItem);
 
-            await LoadTodos();
+                await _todoService.DeleteTodo(toDoItem);
+
+                await LoadTodos();
+            }
         }
 
         internal async Task EditTodo(Models.ToDo toDoItem)

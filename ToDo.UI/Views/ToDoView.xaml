@@ -21,6 +21,11 @@
                         <ViewCell>
                             <ViewCell.ContextActions>
                                 <MenuItem Command="{Binding Source={x:Reference ContentPage},
+                                    Path=BindingContext.DataContext.EditTodoItemCommand, Mode=OneWay}"
+                                          CommandParameter="{Binding .}"
+                                          Text="Edit"
+                                          IconImageSource="editIcon.png" />
+                                <MenuItem Command="{Binding Source={x:Reference ContentPage},
                                     Path=BindingContext.DataContext.RemoveTodoItemCommand, Mode=OneWay}"
                                           CommandParameter="{Binding .}"
                                           Text="Delete"

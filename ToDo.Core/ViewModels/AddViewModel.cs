@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using ToDo.Core.Models;
@@ -16,14 +17,16 @@ namespace ToDo.Core.ViewModels
     {
         private readonly IToDoService _todoService;
         private readonly IMvxNavigationService _navigationService;
+        private readonly IUserDialogs _userDialogService;
 
         public Models.ToDo ToDoItem { get; set; }
         public ICommand AddTodoItemCommand { get; }
 
-        public AddViewModel(IToDoService todoService, IMvxNavigationService navigationService)
+        public AddViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
         {
             _todoService = todoService;
             _navigationService = navigationService;
+            _userDialogService = userDialogService;
 
             ToDoItem = new Models.ToDo();
             AddTodoItemCommand = new Command(async () => await AddTodo());
@@ -31,13 +34,17 @@ namespace ToDo.Core.ViewModels
 
         internal async Task AddTodo()
         {
-            if (ToDoItem.Title != null)
+            if (ToDoItem.Title == null)
             {
-                ToDoItem.State = State.Pending;
-                await _todoService.SaveTodoAsync(ToDoItem);
-
-                await _navigationService.Close(this);
+                _userDialogService.Alert("Title cannot be empty!");
+                return;
             }
+
+            ToDoItem.State = State.Pending;
+            await _todoService.SaveTodoAsync(ToDoItem);
+
+            await _navigationService.Close(this);
+            
         }
     }
 }

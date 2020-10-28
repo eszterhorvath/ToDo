@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿using System.Runtime.CompilerServices;
+using Acr.UserDialogs;
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Support.V7.App;
@@ -19,5 +21,10 @@ namespace ToDo.Droid
         LaunchMode = LaunchMode.SingleTask)]
     public class MainActivity : MvxFormsAppCompatActivity<MvxFormsAndroidSetup<App, FormsApp>, App, FormsApp>
     {
+        protected override void OnCreate(Bundle bundle)
+        {
+            UserDialogs.Init(this);
+            base.OnCreate(bundle);
+        }
     }
 }

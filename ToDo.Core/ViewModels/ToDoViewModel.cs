@@ -22,6 +22,7 @@ namespace ToDo.Core.ViewModels
         public ICommand AddTodoItemCommand { get; }
         public ICommand ChangeStateCommand { get; }
         public ICommand RemoveTodoItemCommand { get; }
+        public ICommand EditTodoItemCommand { get; }
 
         public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService)
         {
@@ -34,6 +35,8 @@ namespace ToDo.Core.ViewModels
                 async (selectedItem) => await ChangeState((Models.ToDo)selectedItem));
             RemoveTodoItemCommand = new Command(
                 async (swipedItem) => await RemoveTodo((Models.ToDo)swipedItem));
+            EditTodoItemCommand = new Command(
+                async (swipedItem) => await EditTodo((Models.ToDo)swipedItem));
         }
 
         public override async Task Initialize()
@@ -75,6 +78,11 @@ namespace ToDo.Core.ViewModels
             ToDos = todosCollection;
         }
 
+        internal async Task AddNewTodo()
+        {
+            await _navigationService.Navigate<AddViewModel>();
+        }
+
         internal async Task RemoveTodo(Models.ToDo toDoItem)
         {
             ToDos.Remove(toDoItem);
@@ -84,9 +92,9 @@ namespace ToDo.Core.ViewModels
             await LoadTodos();
         }
 
-        internal async Task AddNewTodo()
+        internal async Task EditTodo(Models.ToDo toDoItem)
         {
-            await _navigationService.Navigate<AddViewModel>();
+            await _navigationService.Navigate<EditViewModel, Models.ToDo>(toDoItem);
         }
 
         internal async Task ChangeState(Models.ToDo toDoItem)

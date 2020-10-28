@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Acr.UserDialogs;
 using MvvmCross;
 using MvvmCross.ViewModels;
 using ToDo.Core.Services;
@@ -15,6 +16,7 @@ namespace ToDo.Core
         {
             string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Todos.db3");
             Mvx.IoCProvider.RegisterSingleton<IToDoService>(new ToDoService(dbPath));
+            Mvx.IoCProvider.RegisterSingleton(UserDialogs.Instance);
 
             RegisterAppStart<ToDoViewModel>();
         }

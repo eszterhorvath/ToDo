@@ -32,7 +32,7 @@ namespace ToDo.Core.Models
         {
             if (t1.State == State.Done && t2.State == State.Done)
             {
-                return 0;
+                return t1.Id < t2.Id ? -1 : 1;
             }
             else if (t1.State == State.Pending && t2.State == State.Done)
             {
@@ -44,7 +44,7 @@ namespace ToDo.Core.Models
             }
             else
             {
-                return 0;
+                return t1.Id < t2.Id ? -1 : 1;
             }
         }
     }

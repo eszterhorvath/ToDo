@@ -66,5 +66,14 @@ namespace ToDo.Core.Services
 
             return c.Delete(todo);
         }
+
+        public async Task<List<Models.ToDo>> SearchTodo(string searchedText)
+        {
+            await EnsureInitialized();
+            var c = _database.GetConnection();
+
+            return c.Table<Models.ToDo>().Where(x => 
+                (x.Title.ToLower().Contains(searchedText) || x.Description.ToLower().Contains(searchedText))).ToList();
+        }
     }
 }

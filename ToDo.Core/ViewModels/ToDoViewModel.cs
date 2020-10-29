@@ -127,21 +127,7 @@ namespace ToDo.Core.ViewModels
 
         internal async Task SearchTodos()
         {
-            var todoList = await _todoService.GetTodosAsync();
-
-            var resultList = new List<Models.ToDo>();
-            foreach (var todo in todoList)
-            {
-                if (todo.Title.ToLower().Contains(SearchedString))
-                {
-                    resultList.Add(todo);
-                }
-                else if (!String.IsNullOrWhiteSpace(todo.Description) && todo.Description.ToLower().Contains(SearchedString))
-                {
-                    resultList.Add(todo);
-                }
-            }
-
+            var resultList = await _todoService.SearchTodo(SearchedString);
             var resultCollection = new ObservableCollection<Models.ToDo>(resultList);
 
             ToDos = resultCollection;

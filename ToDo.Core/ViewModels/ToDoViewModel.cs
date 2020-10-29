@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
+using Bogus;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
@@ -145,6 +146,20 @@ namespace ToDo.Core.ViewModels
             SearchedString = query.ToLower();
             
             await SearchTodos();
+        }
+
+        private async Task GenerateRandomData()
+        {
+            int i = 0;
+            while (i != 10000)
+            {
+                i++;
+                var testTodo = new Faker<Models.ToDo>()
+                    .RuleFor(t => t.Title, s => s.Lorem.Sentence())
+                    .RuleFor(t => t.Description, s => s.Lorem.Paragraph())
+                    .RuleFor(t => t.State, s => s.PickRandom<Models.State>());
+                await _todoService.SaveTodoAsync(testTodo);
+            }
         }
     }
 }

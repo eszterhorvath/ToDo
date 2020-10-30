@@ -5,10 +5,10 @@ using Xamarin.Forms;
 
 namespace ToDo.UI.Behaviors
 {
-    public class ItemSelectedToCommandBehavior : BehaviorBase<ListView>
+    public class ListViewItemSelectedToCommandBehavior : BehaviorBase<ListView>
     {
         public static readonly BindableProperty CommandProperty =
-            BindableProperty.Create("Command", typeof(ICommand), typeof(ItemSelectedToCommandBehavior), null);
+            BindableProperty.Create("Command", typeof(ICommand), typeof(ListViewItemSelectedToCommandBehavior), null);
 
         public ICommand Command
         {

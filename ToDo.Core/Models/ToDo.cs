@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SQLite;
 
@@ -12,8 +13,9 @@ namespace ToDo.Core.Models
         Done
     };
 
-    public class ToDo
+    public class ToDo : INotifyPropertyChanged
     {
+
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; } = 0;
 
@@ -21,7 +23,23 @@ namespace ToDo.Core.Models
 
         public string Description { get; set; }
 
-        public State State { get; set; }
+        private State _state;
+        public State State
+        {
+            get => _state;
+            set
+            {
+                _state = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class TodoComparer : IComparer<ToDo>
@@ -32,7 +50,7 @@ namespace ToDo.Core.Models
         {
             if (t1.State == State.Done && t2.State == State.Done)
             {
-                return 0;
+                return t1.Id < t2.Id ? -1 : 1;
             }
             else if (t1.State == State.Pending && t2.State == State.Done)
             {
@@ -44,7 +62,7 @@ namespace ToDo.Core.Models
             }
             else
             {
-                return 0;
+                return t1.Id < t2.Id ? -1 : 1;
             }
         }
     }

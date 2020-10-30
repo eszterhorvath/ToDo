@@ -11,5 +11,6 @@ namespace ToDo.Core.Services
         Task<Models.ToDo> GetTodoAsync(int id);
         Task<int> SaveTodoAsync(Models.ToDo todo);
         Task<int> DeleteTodo(Models.ToDo todo);
+        Task<List<Models.ToDo>> SearchTodo(string searchedText);
     }
 }

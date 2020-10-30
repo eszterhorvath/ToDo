@@ -23,7 +23,25 @@ namespace ToDo.Core.Services
                 return Task.CompletedTask;
 
             _database = new SQLiteAsyncConnection(_dbPath);
-            _database.GetConnection().CreateTable<Models.ToDo>();
+            var c =_database.GetConnection();
+
+            c.CreateTable<Models.ToDo>();
+
+            c.Execute("CREATE VIRTUAL TABLE IF NOT EXISTS ToDo_VT " +
+                      "USING FTS5(Id,Title,Description,State)");
+            c.Execute("CREATE TRIGGER IF NOT EXISTS UpdateVTWhenNewItemWasInserted " +
+                      "AFTER INSERT " +
+                      "ON ToDo " +
+                      "BEGIN " +
+                      "INSERT INTO ToDo_VT VALUES (new.Id,new.Title,new.Description,new.State); " +
+                      "END;");
+            c.Execute("CREATE TRIGGER IF NOT EXISTS UpdateVTWhenItemWasModified " +
+                      "AFTER UPDATE " +
+                      "ON ToDo " +
+                      "BEGIN " +
+                          "DELETE FROM ToDo_VT WHERE Id = old.Id; " +
+                          "INSERT INTO ToDo_VT VALUES (old.Id,new.Title,new.Description,new.State); " +
+                      "END;");
 
             return Task.CompletedTask;
         }
@@ -66,5 +84,16 @@ namespace ToDo.Core.Services
 
             return c.Delete(todo);
         }
+
+        public async Task<List<Models.ToDo>> SearchTodo(string searchedText)
+        {
+            await EnsureInitialized();
+            var c = _database.GetConnection();
+
+            return c.Query<Models.ToDo>("SELECT * " +
+                                         "FROM ToDo_VT " +
+                                         "WHERE ToDo_VT MATCH ?", searchedText);
+        }
     }
+
 }

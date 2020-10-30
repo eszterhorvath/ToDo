@@ -3,7 +3,6 @@
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
-             xmlns:mvx="clr-namespace:MvvmCross.Forms.Bindings;assembly=MvvmCross.Forms"
              xmlns:viewModels="clr-namespace:ToDo.Core.ViewModels;assembly=ToDo.Core"
              xmlns:behaviors="clr-namespace:ToDo.UI.Behaviors;assembly=ToDo.UI"
              x:Class="ToDo.UI.Views.ToDoView"
@@ -11,10 +10,14 @@
              Title="ToDo">
     <ContentPage.Content>
         <StackLayout>
-            <ListView mvx:Bi.nd="ItemsSource ToDos, Mode=OneWay" HasUnevenRows="True"
-                      SelectedItem="{Binding SelectedTodo, Mode=OneWay}">
+            <SearchBar Placeholder="Search todos...">
+                <SearchBar.Behaviors>
+                    <behaviors:SearchBarTextChangedToCommandBehavior Command="{Binding SearchTextChangedCommand, Mode=OneWay}"/>
+                </SearchBar.Behaviors>
+            </SearchBar>
+            <ListView ItemsSource="{Binding ToDos, Mode=OneWay}" HasUnevenRows="True">
                 <ListView.Behaviors>
-                    <behaviors:ItemSelectedToCommandBehavior Command="{Binding ChangeStateCommand, Mode=OneWay}"/>
+                    <behaviors:ListViewItemSelectedToCommandBehavior Command="{Binding ChangeStateCommand, Mode=OneWay}"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -40,9 +43,9 @@
                                     <ColumnDefinition Width="80*"/>
                                     <ColumnDefinition Width="20*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" mvx:Bi.nd="Text Title, Mode=OneWay" FontAttributes="Bold" LineBreakMode="WordWrap" />
-                                <Label Grid.Row="1" Grid.Column="0" mvx:Bi.nd="Text Description, Mode=OneWay" LineBreakMode="WordWrap"/>
-                                <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" mvx:Bi.nd="Text State, Mode=OneWay"
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Title, Mode=OneWay}" FontAttributes="Bold" LineBreakMode="WordWrap" />
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding Description, Mode=OneWay}" LineBreakMode="WordWrap"/>
+                                <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Text="{Binding State, Mode=OneWay}"
                                        LineBreakMode="WordWrap" HorizontalTextAlignment="End" VerticalTextAlignment="Center"/>
                             </Grid>
                         </ViewCell>

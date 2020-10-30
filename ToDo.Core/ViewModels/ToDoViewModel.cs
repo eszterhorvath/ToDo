@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
-using MvvmCross.Commands;
+using Bogus;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
+using ReactiveUI;
 using ToDo.Core.Models;
 using ToDo.Core.Services;
 using Xamarin.Forms;
@@ -21,10 +22,13 @@ namespace ToDo.Core.ViewModels
         private readonly IMvxNavigationService _navigationService;
         private readonly IUserDialogs _userDialogService;
 
+        private readonly IDisposable _subscription;
+
         public ICommand AddTodoItemCommand { get; }
         public ICommand ChangeStateCommand { get; }
         public ICommand RemoveTodoItemCommand { get; }
         public ICommand EditTodoItemCommand { get; }
+        public ICommand SearchTextChangedCommand { get; }
 
         public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
         {
@@ -40,6 +44,23 @@ namespace ToDo.Core.ViewModels
                 async (swipedItem) => await RemoveTodo((Models.ToDo)swipedItem));
             EditTodoItemCommand = new Command(
                 async (swipedItem) => await EditTodo((Models.ToDo)swipedItem));
+            SearchTextChangedCommand = new Command(
+                async (query) => await SearchedTextChanged((string)query));
+
+            _subscription = this.WhenAnyValue(x => x.SearchedString)
+                .Throttle(TimeSpan.FromMilliseconds(500))
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .SelectMany(x =>
+                {
+                    return SearchTodos(x).ContinueWith((a) => Task.FromResult(Unit.Default));
+                })
+                .Subscribe();
+        }
+
+        ~ToDoViewModel()
+        {
+            _subscription.Dispose();
         }
 
         public override async Task Initialize()
@@ -65,11 +86,15 @@ namespace ToDo.Core.ViewModels
             }
         }
 
-        private Models.ToDo _selectedTodo;
-        public Models.ToDo SelectedTodo
+        private string _searchedString;
+        public string SearchedString
         {
-            get => _selectedTodo;
-            set => _selectedTodo = null;
+            get => _searchedString;
+            set
+            {
+                _searchedString = value;
+                RaisePropertyChanged();
+            }
         }
 
         private async Task LoadTodos()
@@ -100,8 +125,6 @@ namespace ToDo.Core.ViewModels
                 ToDos.Remove(toDoItem);
 
                 await _todoService.DeleteTodo(toDoItem);
-
-                await LoadTodos();
             }
         }
 
@@ -117,6 +140,41 @@ namespace ToDo.Core.ViewModels
             await _todoService.SaveTodoAsync(toDoItem);
 
             await LoadTodos();
+        }
+
+        internal async Task SearchTodos(string searchedString)
+        {
+            var resultList = await _todoService.SearchTodo(searchedString);
+
+            ToDos.Clear();
+            foreach (var t in resultList)
+                ToDos.Add(t);
+        }
+
+        internal async Task SearchedTextChanged(string query)
+        {
+            if (String.IsNullOrWhiteSpace(query))
+            {
+                await LoadTodos();
+                SearchedString = query;
+                return;
+            }
+
+            SearchedString = query.ToLower();
+        }
+
+        private async Task GenerateRandomData()
+        {
+            int i = 0;
+            while (i != 10000)
+            {
+                i++;
+                var testTodo = new Faker<Models.ToDo>()
+                    .RuleFor(t => t.Title, s => s.Lorem.Sentence())
+                    .RuleFor(t => t.Description, s => s.Lorem.Paragraph())
+                    .RuleFor(t => t.State, s => s.PickRandom<Models.State>());
+                await _todoService.SaveTodoAsync(testTodo);
+            }
         }
     }
 }

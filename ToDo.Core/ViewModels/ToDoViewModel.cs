@@ -69,14 +69,15 @@ namespace ToDo.Core.ViewModels
             }
         }
 
-        public string SearchedString { get; set; }
-
-
-        private Models.ToDo _selectedTodo;
-        public Models.ToDo SelectedTodo
+        private string _searchedString;
+        public string SearchedString
         {
-            get => _selectedTodo;
-            set => _selectedTodo = null;
+            get => _searchedString;
+            set
+            {
+                _searchedString = value;
+                RaisePropertyChanged();
+            }
         }
 
         private async Task LoadTodos()
@@ -107,8 +108,6 @@ namespace ToDo.Core.ViewModels
                 ToDos.Remove(toDoItem);
 
                 await _todoService.DeleteTodo(toDoItem);
-
-                await LoadTodos();
             }
         }
 
@@ -126,12 +125,13 @@ namespace ToDo.Core.ViewModels
             await LoadTodos();
         }
 
-        internal async Task SearchTodos()
+        internal async Task SearchTodos(string searchedString)
         {
-            var resultList = await _todoService.SearchTodo(SearchedString);
-            var resultCollection = new ObservableCollection<Models.ToDo>(resultList);
+            var resultList = await _todoService.SearchTodo(searchedString);
 
-            ToDos = resultCollection;
+            ToDos.Clear();
+            foreach (var t in resultList)
+                ToDos.Add(t);
         }
 
         internal async Task SearchedTextChanged(string query)
@@ -144,8 +144,6 @@ namespace ToDo.Core.ViewModels
             }
 
             SearchedString = query.ToLower();
-            
-            await SearchTodos();
         }
 
         private async Task GenerateRandomData()

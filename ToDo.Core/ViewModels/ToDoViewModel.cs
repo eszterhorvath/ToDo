@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using Bogus;
-using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
+using ReactiveUI;
 using ToDo.Core.Models;
 using ToDo.Core.Services;
 using Xamarin.Forms;
@@ -21,6 +21,8 @@ namespace ToDo.Core.ViewModels
         private readonly IToDoService _todoService;
         private readonly IMvxNavigationService _navigationService;
         private readonly IUserDialogs _userDialogService;
+
+        private readonly IDisposable _subscription;
 
         public ICommand AddTodoItemCommand { get; }
         public ICommand ChangeStateCommand { get; }
@@ -44,6 +46,21 @@ namespace ToDo.Core.ViewModels
                 async (swipedItem) => await EditTodo((Models.ToDo)swipedItem));
             SearchTextChangedCommand = new Command(
                 async (query) => await SearchedTextChanged((string)query));
+
+            _subscription = this.WhenAnyValue(x => x.SearchedString)
+                .Throttle(TimeSpan.FromMilliseconds(500))
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .SelectMany(x =>
+                {
+                    return SearchTodos(x).ContinueWith((a) => Task.FromResult(Unit.Default));
+                })
+                .Subscribe();
+        }
+
+        ~ToDoViewModel()
+        {
+            _subscription.Dispose();
         }
 
         public override async Task Initialize()

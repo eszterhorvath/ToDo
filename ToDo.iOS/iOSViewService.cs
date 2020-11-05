@@ -48,9 +48,10 @@ namespace ToDo.iOS
 
             // Edit/Delete row : 60
             // Done/Pending row : 60
-            // Close button row : 140
+            // Close button row : 140 (50 + 40 + 50)
             // +5 to add a little space between the Close icon and the bottom of the screen
             // Sum : 260
+
             if (y > (height - ((int)grid.Bounds.Height + 300)))
             {
                 y = height - ((int)grid.Bounds.Height + 300);

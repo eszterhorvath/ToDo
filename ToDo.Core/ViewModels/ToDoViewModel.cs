@@ -86,6 +86,7 @@ namespace ToDo.Core.ViewModels
             await LoadTodos();
         }
 
+
         private ObservableCollection<Models.ToDo> _toDos;
         public ObservableCollection<Models.ToDo> ToDos
         {
@@ -97,6 +98,7 @@ namespace ToDo.Core.ViewModels
             }
         }
 
+
         private string _searchedString;
         public string SearchedString
         {
@@ -107,6 +109,7 @@ namespace ToDo.Core.ViewModels
                 RaisePropertyChanged();
             }
         }
+
 
         private Models.ToDo _selectedTodo;
         public Models.ToDo SelectedTodo
@@ -122,6 +125,7 @@ namespace ToDo.Core.ViewModels
             }
         }
 
+
         private double _selectedTodoY;
         public double SelectedTodoY
         {
@@ -132,6 +136,7 @@ namespace ToDo.Core.ViewModels
                 RaisePropertyChanged();
             }
         }
+
 
         private double _selectedTodoGridHeight;
         public double SelectedTodoGridHeight
@@ -144,6 +149,7 @@ namespace ToDo.Core.ViewModels
             }
         }
 
+
         private string _changeStateText;
         public string ChangeStateText
         {
@@ -155,6 +161,7 @@ namespace ToDo.Core.ViewModels
             }
         }
 
+
         private bool _fadeBackgroundFrontSideVisibility;
         public bool FadeBackgroundFrontSideVisibility
         {
@@ -165,6 +172,7 @@ namespace ToDo.Core.ViewModels
                 RaisePropertyChanged();
             }
         }
+
 
         private bool _fadeBackgroundBackSideVisibility;
         public bool FadeBackgroundBackSideVisibility

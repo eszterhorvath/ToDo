@@ -285,7 +285,7 @@ namespace ToDo.Core.ViewModels
                 return;
             }
 
-            SearchedString = query.ToLower();
+            SearchedString = query;
         }
 
         internal void GridTapped(Grid grid)

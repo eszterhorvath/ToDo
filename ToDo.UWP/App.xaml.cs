@@ -34,7 +34,7 @@ namespace ToDo.UWP
             this.InitializeComponent();
         }
     }
-    public abstract class ToDoApp : MvxWindowsApplication<MvxFormsWindowsSetup<Core.App, FormsApp>, Core.App, FormsApp, MvxFormsWindowsPage>
+    public abstract class ToDoApp : MvxWindowsApplication<Setup, Core.App, FormsApp, MvxFormsWindowsPage>
     {
     }
 }

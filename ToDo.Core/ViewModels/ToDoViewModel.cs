@@ -28,33 +28,26 @@ namespace ToDo.Core.ViewModels
         public ICommand AddTodoItemCommand { get; }
         public ICommand ChangeStateCommand { get; }
         public ICommand DeleteTodoItemCommand { get; }
-        public ICommand RemoveTodoItemCommand { get; }
         public ICommand EditTodoItemCommand { get; }
         public ICommand SearchTextChangedCommand { get; }
-        public ICommand GridTappedCommand { get; }
         public ICommand FadeBackgroundCloseCommand { get; }
 
-        public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService, INativeViewService nativeViewService)
+        public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
         {
             _todoService = todoService;
             _navigationService = navigationService;
             _userDialogService = userDialogService;
-            _nativeViewService = nativeViewService;
 
             AddTodoItemCommand = new Command(
                 async () => await AddNewTodo());
             ChangeStateCommand = new Command(
                 async () => await ChangeState());
-            RemoveTodoItemCommand = new Command(
-                async (frontSide) => await RemoveTodo((VisualElement)frontSide));
             DeleteTodoItemCommand = new Command(
                 async () => await DeleteTodo());
             EditTodoItemCommand = new Command(
                 async () => await EditTodo());
             SearchTextChangedCommand = new Command(
                 async (query) => await SearchedTextChanged((string)query));
-            GridTappedCommand = new Command(
-                (tappedItem) => GridTapped((Grid)tappedItem));
             FadeBackgroundCloseCommand = new Command(
                 async () => await FadeBackgroundClose());
 
@@ -67,11 +60,6 @@ namespace ToDo.Core.ViewModels
                     return SearchTodos(x).ContinueWith((a) => Task.FromResult(Unit.Default));
                 })
                 .Subscribe();
-        }
-
-        ~ToDoViewModel()
-        {
-            _subscription.Dispose();
         }
 
         public override async Task Initialize()
@@ -126,30 +114,6 @@ namespace ToDo.Core.ViewModels
         }
 
 
-        private double _selectedTodoY;
-        public double SelectedTodoY
-        {
-            get => _selectedTodoY;
-            set
-            {
-                _selectedTodoY = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        private double _selectedTodoGridHeight;
-        public double SelectedTodoGridHeight
-        {
-            get => _selectedTodoGridHeight;
-            set
-            {
-                _selectedTodoGridHeight = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
         private string _changeStateText;
         public string ChangeStateText
         {
@@ -199,8 +163,8 @@ namespace ToDo.Core.ViewModels
             await _navigationService.Navigate<AddViewModel>();
         }
 
-        internal async Task RemoveTodo(VisualElement frontSide)
-        {
+        //internal async Task RemoveTodo()
+        //{
             //var confirmed = await _userDialogService.ConfirmAsync(new ConfirmConfig()
             //{
             //    Message = "Are you sure you want to delete this item?",
@@ -214,26 +178,7 @@ namespace ToDo.Core.ViewModels
 
             //    await _todoService.DeleteTodo(SelectedTodo);
             //}
-
-            var frontSideToFlip = frontSide.FindByName<Grid>("FrontSideToFlip");
-
-            var parent = (Grid)frontSide.Parent;
-            var backSide = parent.FindByName<Grid>("BackSide");
-            var backSideToFlip = frontSide.FindByName<Grid>("BackSideToFlip");
-
-            await Flip(frontSideToFlip, backSideToFlip);
-
-        }
-
-        internal async Task Flip(VisualElement from, VisualElement to)
-        {
-            await from.RotateYTo(-90, 300, Easing.SpringIn);
-            to.RotationY = 90;
-            FadeBackgroundBackSideVisibility = true;
-            FadeBackgroundFrontSideVisibility = false;
-            from.RotationY = 0;
-            await to.RotateYTo(0, 300, Easing.SpringOut);
-        }
+        //}
 
         internal async Task DeleteTodo()
         {
@@ -286,23 +231,6 @@ namespace ToDo.Core.ViewModels
             }
 
             SearchedString = query;
-        }
-
-        internal void GridTapped(Grid grid)
-        {
-            SelectedTodoGridHeight = grid.Height;
-
-            var lw = (ListView)grid.Parent.Parent;
-
-            var toDoItem = (Models.ToDo)grid.BindingContext;
-            SelectedTodo = toDoItem;
-
-            int[] bounds = _nativeViewService.GetCoordinates(grid);
-
-            // Ensure that the grid won't hang out from the screen
-            SelectedTodoY = _nativeViewService.ValidateYPosition(bounds[1], grid);
-
-            FadeBackgroundFrontSideVisibility = true;
         }
 
         internal async Task FadeBackgroundClose()

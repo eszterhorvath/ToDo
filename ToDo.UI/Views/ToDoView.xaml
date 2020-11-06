@@ -39,11 +39,9 @@
                                                   Text="Delete"
                                                   IconImageSource="deleteIcon.png" />
                                     </ViewCell.ContextActions>-->
-                                    <Grid Padding="20" BackgroundColor="DimGray" x:Name="TapGrid" >
+                                    <Grid Padding="20" BackgroundColor="DimGray" x:Name="ListViewItemGrid" >
                                         <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ContentPage},
-                                                Path=BindingContext.DataContext.GridTappedCommand, Mode=OneWay}"
-                                                                  CommandParameter="{Binding Source={x:Reference TapGrid}}" />
+                                            <TapGestureRecognizer Tapped="OnGridTapped" />
                                         </Grid.GestureRecognizers>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -70,7 +68,7 @@
                 </StackLayout>
 
                 <Grid x:Name="FrontSide" Grid.Row="0"
-                      IsVisible="{Binding FadeBackgroundFrontSideVisibility, Mode=OneWay}"
+                      IsVisible="{Binding FadeBackgroundFrontSideVisibility, Mode=TwoWay}"
                       BackgroundColor="#CC000000">
 
                     <Grid x:Name="FrontSideToFlip">
@@ -82,8 +80,7 @@
                             <RowDefinition Height="140" />
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Padding="20" BackgroundColor="DimGray"
-                              TranslationY="{Binding SelectedTodoY, Mode=OneWay}">
+                        <Grid Grid.Row="0" Padding="20" BackgroundColor="DimGray">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
@@ -101,7 +98,7 @@
                                    HorizontalTextAlignment="End" VerticalTextAlignment="Center"/>
                         </Grid>
 
-                        <Grid Grid.Row="1" TranslationY="{Binding SelectedTodoY, Mode=OneWay}">
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50*"/>
                                 <ColumnDefinition Width="50*"/>
@@ -111,8 +108,7 @@
                                   Grid.Column="0">
 
                                 <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding RemoveTodoItemCommand, Mode=OneWay}"
-                                                          CommandParameter="{Binding Source={x:Reference FrontSide}}"/>
+                                    <TapGestureRecognizer Tapped="OnRemoveTapped"/>
                                 </Grid.GestureRecognizers>
                                 <StackLayout
                                     HorizontalOptions="Center"
@@ -150,8 +146,8 @@
                                 </StackLayout>
                             </Grid>
                         </Grid>
-                        <Grid Grid.Row="2" TranslationY="{Binding SelectedTodoY, Mode=OneWay}"
-                              BackgroundColor="#3D3D3D">
+
+                        <Grid Grid.Row="2" BackgroundColor="#3D3D3D">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding ChangeStateCommand, Mode=OneWay}"/>
                             </Grid.GestureRecognizers>
@@ -170,7 +166,7 @@
                             </StackLayout>
                         </Grid>
 
-                        <Image Grid.Row="3" TranslationY="{Binding SelectedTodoY, Mode=OneWay}"
+                        <Image Grid.Row="3"
                                Margin="50"
                                Source="closeIcon.png">
                             <Image.GestureRecognizers>
@@ -181,22 +177,21 @@
                 </Grid>
 
                 <Grid x:Name="BackSide" Grid.Row="0"
-                      IsVisible="{Binding FadeBackgroundBackSideVisibility, Mode=OneWay}"
+                      IsVisible="{Binding FadeBackgroundBackSideVisibility, Mode=TwoWay}"
                       BackgroundColor="#CC000000">
 
                     <Grid x:Name="BackSideToFlip">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="{Binding SelectedTodoGridHeight, Mode=OneWay}" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="60" />
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Padding="20" BackgroundColor="DimGray"
-                              TranslationY="{Binding SelectedTodoY, Mode=OneWay}">
+                        <Grid x:Name="DeleteTextGrid" Grid.Row="0" Padding="20" BackgroundColor="DimGray">
                             <Label Text="Are you sure you want to delete this item?" FontSize="Medium"
                                    VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
                         </Grid>
 
-                        <Grid Grid.Row="1" TranslationY="{Binding SelectedTodoY, Mode=OneWay}">
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50*"/>
                                 <ColumnDefinition Width="50*"/>

@@ -21,7 +21,6 @@ namespace ToDo.Core.ViewModels
         private readonly IToDoService _todoService;
         private readonly IMvxNavigationService _navigationService;
         private readonly IUserDialogs _userDialogService;
-        private readonly INativeViewService _nativeViewService;
 
         private readonly IDisposable _subscription;
 

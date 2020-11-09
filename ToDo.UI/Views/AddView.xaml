@@ -9,13 +9,18 @@
                        Title="Add new todo item"
                        BackgroundColor="Gray">
     <ContentPage.Content>
-        <StackLayout Padding="10">
-            <Label Text="Title"/>
-            <Entry x:Name="TitleEntry" Text="{Binding ToDoItem.Title, Mode=TwoWay}"/>
-            <Label Text="Description"/>
-            <Entry x:Name="DescriptionEntry" Text="{Binding ToDoItem.Description, Mode=TwoWay}" />
+        <ScrollView>
+            <StackLayout Padding="10">
+                <Label Text="Title"/>
+                <Entry x:Name="TitleEntry" Text="{Binding ToDoItem.Title, Mode=TwoWay}"/>
+                <Label Text="Description"/>
+                <Entry x:Name="DescriptionEntry" Text="{Binding ToDoItem.Description, Mode=TwoWay}" />
 
-            <Button x:Name="AddButton" Command="{Binding AddTodoItemCommand, Mode=OneWay}" Text="Add" Margin="10"/>
-        </StackLayout>
+                <Image x:Name="PhotoImage" />
+                <Button x:Name="CameraButton" Text="Take a photo" Clicked="CameraButton_OnClicked" Margin="10"/>
+
+                <Button x:Name="AddButton" Command="{Binding AddTodoItemCommand, Mode=OneWay}" Text="Add" Margin="10"/>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </views:MvxContentPage>

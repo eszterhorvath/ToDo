@@ -8,6 +8,7 @@ using MvvmCross.Forms.Views;
 using ToDo.Core.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
 
 namespace ToDo.UI.Views
 {
@@ -17,6 +18,14 @@ namespace ToDo.UI.Views
         public AddView()
         {
             InitializeComponent();
+        }
+
+        private async void CameraButton_OnClicked(object sender, EventArgs e)
+        {
+            var photo = await MediaPicker.CapturePhotoAsync();
+            var stream = await photo.OpenReadAsync();
+
+            PhotoImage.Source = ImageSource.FromStream(() => stream);
         }
     }
 }

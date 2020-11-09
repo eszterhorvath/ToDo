@@ -6,6 +6,7 @@
 
   <ItemGroup>
       <PackageReference Include="MvvmCross.Forms" Version="6.4.2" />
+      <PackageReference Include="Xamarin.Essentials" Version="1.6.0-pre3" />
       <PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />
       <PackageReference Include="Xamarin.Forms.DebugRainbows" Version="1.1.4" />
   </ItemGroup>

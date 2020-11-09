@@ -6,7 +6,8 @@
                        xmlns:mvx="clr-namespace:MvvmCross.Forms.Bindings;assembly=MvvmCross.Forms"
                        xmlns:viewModels="clr-namespace:ToDo.Core.ViewModels;assembly=ToDo.Core"
                        x:Class="ToDo.UI.Views.AddView"
-                       Title="Add new todo item">
+                       Title="Add new todo item"
+                       BackgroundColor="Gray">
     <ContentPage.Content>
         <StackLayout Padding="10">
             <Label Text="Title"/>

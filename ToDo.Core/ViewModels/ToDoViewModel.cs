@@ -26,9 +26,10 @@ namespace ToDo.Core.ViewModels
 
         public ICommand AddTodoItemCommand { get; }
         public ICommand ChangeStateCommand { get; }
-        public ICommand RemoveTodoItemCommand { get; }
+        public ICommand DeleteTodoItemCommand { get; }
         public ICommand EditTodoItemCommand { get; }
         public ICommand SearchTextChangedCommand { get; }
+        public ICommand FadeBackgroundCloseCommand { get; }
 
         public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
         {
@@ -39,13 +40,15 @@ namespace ToDo.Core.ViewModels
             AddTodoItemCommand = new Command(
                 async () => await AddNewTodo());
             ChangeStateCommand = new Command(
-                async (selectedItem) => await ChangeState((Models.ToDo)selectedItem));
-            RemoveTodoItemCommand = new Command(
-                async (swipedItem) => await RemoveTodo((Models.ToDo)swipedItem));
+                async () => await ChangeState());
+            DeleteTodoItemCommand = new Command(
+                async () => await DeleteTodo());
             EditTodoItemCommand = new Command(
-                async (swipedItem) => await EditTodo((Models.ToDo)swipedItem));
+                async () => await EditTodo());
             SearchTextChangedCommand = new Command(
                 async (query) => await SearchedTextChanged((string)query));
+            FadeBackgroundCloseCommand = new Command(
+                async () => await FadeBackgroundClose());
 
             _subscription = this.WhenAnyValue(x => x.SearchedString)
                 .Throttle(TimeSpan.FromMilliseconds(500))
@@ -56,11 +59,6 @@ namespace ToDo.Core.ViewModels
                     return SearchTodos(x).ContinueWith((a) => Task.FromResult(Unit.Default));
                 })
                 .Subscribe();
-        }
-
-        ~ToDoViewModel()
-        {
-            _subscription.Dispose();
         }
 
         public override async Task Initialize()
@@ -75,6 +73,7 @@ namespace ToDo.Core.ViewModels
             await LoadTodos();
         }
 
+
         private ObservableCollection<Models.ToDo> _toDos;
         public ObservableCollection<Models.ToDo> ToDos
         {
@@ -86,6 +85,7 @@ namespace ToDo.Core.ViewModels
             }
         }
 
+
         private string _searchedString;
         public string SearchedString
         {
@@ -93,6 +93,57 @@ namespace ToDo.Core.ViewModels
             set
             {
                 _searchedString = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private Models.ToDo _selectedTodo;
+        public Models.ToDo SelectedTodo
+        {
+            get => _selectedTodo;
+            set
+            {
+                _selectedTodo = value;
+                ChangeStateText = _selectedTodo.State == State.Pending
+                    ? State.Done.ToString()
+                    : State.Pending.ToString();
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private string _changeStateText;
+        public string ChangeStateText
+        {
+            get => _changeStateText;
+            set
+            {
+                _changeStateText = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool _fadeBackgroundFrontSideVisibility;
+        public bool FadeBackgroundFrontSideVisibility
+        {
+            get => _fadeBackgroundFrontSideVisibility;
+            set
+            {
+                _fadeBackgroundFrontSideVisibility = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool _fadeBackgroundBackSideVisibility;
+        public bool FadeBackgroundBackSideVisibility
+        {
+            get => _fadeBackgroundBackSideVisibility;
+            set
+            {
+                _fadeBackgroundBackSideVisibility = value;
                 RaisePropertyChanged();
             }
         }
@@ -111,35 +162,53 @@ namespace ToDo.Core.ViewModels
             await _navigationService.Navigate<AddViewModel>();
         }
 
-        internal async Task RemoveTodo(Models.ToDo toDoItem)
+        //internal async Task RemoveTodo()
+        //{
+            //var confirmed = await _userDialogService.ConfirmAsync(new ConfirmConfig()
+            //{
+            //    Message = "Are you sure you want to delete this item?",
+            //    OkText = "Delete",
+            //    CancelText = "Cancel"
+            //});
+
+            //if (confirmed)
+            //{
+            //    ToDos.Remove(SelectedTodo);
+
+            //    await _todoService.DeleteTodo(SelectedTodo);
+            //}
+        //}
+
+        internal async Task DeleteTodo()
         {
-            var confirmed = await _userDialogService.ConfirmAsync(new ConfirmConfig()
-            {
-                Message = "Are you sure you want to delete this item?",
-                OkText = "Delete",
-                CancelText = "Cancel"
-            });
+            ToDos.Remove(SelectedTodo);
 
-            if (confirmed)
-            {
-                ToDos.Remove(toDoItem);
+            await _todoService.DeleteTodo(SelectedTodo);
 
-                await _todoService.DeleteTodo(toDoItem);
+            FadeBackgroundBackSideVisibility = false;
+        }
+
+        internal async Task EditTodo()
+        {
+            await _navigationService.Navigate<EditViewModel, Models.ToDo>(SelectedTodo);
+            FadeBackgroundFrontSideVisibility = false;
+        }
+
+        internal async Task ChangeState()
+        {
+            if (SelectedTodo.State == State.Done)
+            {
+                SelectedTodo.State = State.Pending;
+                ChangeStateText = State.Done.ToString();
             }
-        }
+            else
+            {
+                SelectedTodo.State = State.Done;
+                ChangeStateText = State.Pending.ToString();
 
-        internal async Task EditTodo(Models.ToDo toDoItem)
-        {
-            await _navigationService.Navigate<EditViewModel, Models.ToDo>(toDoItem);
-        }
+            }
 
-        internal async Task ChangeState(Models.ToDo toDoItem)
-        {
-            toDoItem.State = (toDoItem.State == State.Done) ? State.Pending : State.Done;
-
-            await _todoService.SaveTodoAsync(toDoItem);
-
-            await LoadTodos();
+            await _todoService.SaveTodoAsync(SelectedTodo);
         }
 
         internal async Task SearchTodos(string searchedString)
@@ -160,7 +229,15 @@ namespace ToDo.Core.ViewModels
                 return;
             }
 
-            SearchedString = query.ToLower();
+            SearchedString = query;
+        }
+
+        internal async Task FadeBackgroundClose()
+        {
+            FadeBackgroundFrontSideVisibility = false;
+            FadeBackgroundBackSideVisibility = false;
+
+            await LoadTodos();
         }
 
         private async Task GenerateRandomData()

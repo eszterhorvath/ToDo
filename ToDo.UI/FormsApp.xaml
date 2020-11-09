@@ -1,7 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
              x:Class="ToDo.UI.FormsApp">
     <Application.Resources>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="WhiteSmoke" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="TextColor" Value="WhiteSmoke" />
+            <Setter Property="BackgroundColor" Value="#F8485E" />
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="TextColor">
+                <OnPlatform x:TypeArguments="Color" Default="WhiteSmoke">
+                    <On Platform="iOS">Black</On>
+                </OnPlatform>
+            </Setter>
+        </Style>
+        <Style TargetType="Picker">
+            <Setter Property="TextColor">
+                <OnPlatform x:TypeArguments="Color" Default="WhiteSmoke">
+                    <On Platform="iOS">Black</On>
+                </OnPlatform>
+            </Setter>
+        </Style>
+        <Style TargetType="SearchBar">
+            <Setter Property="TextColor" Value="WhiteSmoke" />
+            <Setter Property="BackgroundColor" Value="Gray" />
+            <Setter Property="PlaceholderColor" Value="DimGray" />
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="BackgroundColor" Value="Gray" />
+        </Style>
+        <Style TargetType="NavigationPage">
+            <Setter Property="BackgroundColor" Value="Gray" />
+            <Setter Property="BarBackgroundColor" Value="#F8485E" />
+            <Setter Property="BarTextColor" Value="WhiteSmoke" />
+        </Style>
     </Application.Resources>
 </Application>

@@ -60,10 +60,16 @@
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="iOSViewService.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Setup.cs" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <BundleResource Include="changeIcon.png" />
+    <BundleResource Include="closeIcon.png" />
+    <BundleResource Include="deleteIcon.png" />
+    <BundleResource Include="editIcon.png" />
     <Content Include="Entitlements.plist" />
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
   </ItemGroup>

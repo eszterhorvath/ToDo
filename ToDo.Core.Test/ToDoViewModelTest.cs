@@ -77,15 +77,16 @@ namespace ToDo.Core.Test
                 State = State.Pending
             };
 
-            _todoService.Setup(s => s.GetTodosAsync()).ReturnsAsync(new List<Models.ToDo>());
+            _viewModel.SelectedTodo = todoItem;
+            _todoService.Setup(s => s.SaveTodoAsync(todoItem)).ReturnsAsync(1);
 
             // ACT
-            await _viewModel.ChangeState(todoItem);
+            await _viewModel.ChangeState();
 
             // ASSERT
-            _todoService.Verify(s => s.GetTodosAsync(), Times.Once);
+            _todoService.Verify(s => s.SaveTodoAsync(It.IsAny<Models.ToDo>()), Times.Once);
 
-            Assert.AreEqual(State.Done, todoItem.State);
+            Assert.AreEqual(State.Done, _viewModel.SelectedTodo.State);
         }
 
         [TestMethod]
@@ -114,11 +115,12 @@ namespace ToDo.Core.Test
                 State = State.Pending
             };
 
+            _viewModel.SelectedTodo = todoItem;
             _navigationService.Setup(
                 s => s.Navigate<EditViewModel, Models.ToDo>(todoItem, null, default)).ReturnsAsync(true);
 
             // ACT
-            await _viewModel.EditTodo(todoItem);
+            await _viewModel.EditTodo();
 
             // ASSERT
             _navigationService.Verify(
@@ -126,7 +128,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task WhenRemovingATodo_IfConfirmed_RemovesTheSelectedTodoAndReloadsTheTodos()
+        public async Task WhenRemovingATodo_IfConfirmed_DeletesTheSelectedTodoAndReloadsTheTodos()
         {
             // ARRANGE
             var todoItem = new Models.ToDo()
@@ -137,47 +139,46 @@ namespace ToDo.Core.Test
                 State = State.Pending
             };
 
+            _viewModel.SelectedTodo = todoItem;
             _viewModel.ToDos = new ObservableCollection<Models.ToDo>
             {
                 todoItem
             };
 
-            _userDialogService.Setup(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default)).ReturnsAsync(true);
             _todoService.Setup(s => s.DeleteTodo(It.IsAny<Models.ToDo>())).ReturnsAsync(1);
-            _todoService.Setup(s => s.GetTodosAsync()).ReturnsAsync(new List<Models.ToDo>());
 
             // ACT
-            await _viewModel.RemoveTodo(todoItem);
+            await _viewModel.DeleteTodo();
 
             // ASSERT
-            _userDialogService.Verify(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default), Times.Once);
             _todoService.Verify(s => s.DeleteTodo(It.IsAny<Models.ToDo>()), Times.Once);
-            _todoService.Verify(s => s.GetTodosAsync(), Times.Once());
+            Assert.IsFalse(_viewModel.ToDos.Contains(todoItem));
         }
 
         [TestMethod]
-        public async Task WhenRemovingATodo_IfNotConfirmed_NotRemovesTheSelectedTodo()
+        public async Task WhenSearchingATodo_SearchesTheTextInDB()
         {
             // ARRANGE
-            var todoItem = new Models.ToDo()
+            string searched = "searched text";
+            _viewModel.SearchedString = searched;
+
+            _viewModel.ToDos = new ObservableCollection<Models.ToDo>
             {
-                Title = "Shopping",
-                Description = "Buy wine",
-                State = State.Pending
+                new Models.ToDo()
+                {
+                    Title = "Shopping",
+                    Description = "Buy wine",
+                    State = State.Pending
+                }
             };
 
-            _userDialogService.Setup(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default)).ReturnsAsync(false);
-            _todoService.Setup(s => s.DeleteTodo(It.IsAny<Models.ToDo>())).ReturnsAsync(1);
-            _todoService.Setup(s => s.GetTodosAsync()).ReturnsAsync(new List<Models.ToDo>());
-
+            _todoService.Setup(s => s.SearchTodo(searched)).ReturnsAsync(new List<Models.ToDo>());
 
             // ACT
-            await _viewModel.RemoveTodo(todoItem);
+            await _viewModel.SearchTodos(searched);
 
             // ASSERT
-            _userDialogService.Verify(s => s.ConfirmAsync(It.IsAny<ConfirmConfig>(), default), Times.Once);
-            _todoService.Verify(s => s.DeleteTodo(It.IsAny<Models.ToDo>()), Times.Never);
-            _todoService.Verify(s => s.GetTodosAsync(), Times.Never);
+            _todoService.Verify(s => s.SearchTodo(searched), Times.Once);
         }
     }
 }

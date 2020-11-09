@@ -42,6 +42,12 @@ namespace ToDo.Core.Services
                           "DELETE FROM ToDo_VT WHERE Id = old.Id; " +
                           "INSERT INTO ToDo_VT VALUES (old.Id,new.Title,new.Description,new.State); " +
                       "END;");
+            c.Execute("CREATE TRIGGER IF NOT EXISTS UpdateVTWhenItemWasDeleted " +
+                      "AFTER DELETE " +
+                      "ON ToDo " +
+                      "BEGIN " +
+                      "DELETE FROM ToDo_VT WHERE Id = old.Id; " +
+                      "END;");
 
             return Task.CompletedTask;
         }

@@ -6,7 +6,8 @@
                       xmlns:viewModels="clr-namespace:ToDo.Core.ViewModels;assembly=ToDo.Core"
                       xmlns:models="clr-namespace:ToDo.Core.Models;assembly=ToDo.Core"
                       x:Class="ToDo.UI.Views.EditView"
-                      Title="Edit">
+                      Title="Edit"
+                      BackgroundColor="Gray">
     <ContentPage.Content>
         <StackLayout Padding="10">
             <Label Text="Title"/>

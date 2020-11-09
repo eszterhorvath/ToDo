@@ -12,16 +12,14 @@ namespace ToDo.UWP
 {
     public class UWPViewService : INativeViewService
     {
-        public int[] GetCoordinates(VisualElement visualElement)
+        public int GetAdjustedYPosition(VisualElement visualElement, VisualElement parent)
         {
             // TODO
 
-            int[] coords = {0, 0};
-
-            return coords;
+            return 0;
         }
 
-        public int ValidateYPosition(int y, VisualElement grid)
+        public int GetLowestPossibleYPosition(int y, VisualElement grid)
         {
             // TODO
 

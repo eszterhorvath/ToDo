@@ -7,10 +7,10 @@ namespace ToDo.iOS
 {
     public class iOSViewService : INativeViewService
     {
-        public int[] GetCoordinates(VisualElement visualElement)
+        public int GetAdjustedYPosition(VisualElement visualElement, VisualElement parent)
         {
             // Get the position of the StackLayout
-            var stackLayout = (StackLayout)visualElement.Parent.Parent.Parent;
+            var stackLayout = (StackLayout)parent;
 
             var view = Xamarin.Forms.Platform.iOS.Platform.GetRenderer(stackLayout).NativeView;
 
@@ -22,7 +22,6 @@ namespace ToDo.iOS
             var stackLayoutY = (int)coords.Y * -1;
 
             // Get the position of the selected grid
-
             view = Xamarin.Forms.Platform.iOS.Platform.GetRenderer(visualElement).NativeView;
 
             bounds = visualElement.Bounds;
@@ -30,27 +29,14 @@ namespace ToDo.iOS
 
             coords = view.ConvertPointFromView(p, null);
 
-            var coordsArray = new int[] { (int)coords.X, (int)coords.Y * -1 };
+            var gridY = (int)coords.Y * -1;
 
-            coordsArray[1] = coordsArray[1] - stackLayoutY;
-
-            return coordsArray;
+            return gridY - stackLayoutY;
         }
 
-        public double GetScreenHeight()
-        {
-            return DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
-        }
-
-        public int ValidateYPosition(int y, VisualElement grid)
+        public int GetLowestPossibleYPosition(int y, VisualElement grid)
         {
             var height = (int)(DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
-
-            // Edit/Delete row : 60
-            // Done/Pending row : 60
-            // Close button row : 140 (50 + 40 + 50)
-            // +5 to add a little space between the Close icon and the bottom of the screen
-            // Sum : 260
 
             if (y > (height - ((int)grid.Bounds.Height + 300)))
             {
@@ -59,6 +45,5 @@ namespace ToDo.iOS
 
             return y;
         }
-
     }
 }

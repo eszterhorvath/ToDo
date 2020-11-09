@@ -7,7 +7,7 @@ namespace ToDo.Core.Services
 {
     public interface INativeViewService
     {
-        int[] GetCoordinates(VisualElement visualElement);
-        int ValidateYPosition(int y, VisualElement visualElement);
+        int GetAdjustedYPosition(VisualElement visualElement, VisualElement parent);
+        int GetLowestPossibleYPosition(int y, VisualElement visualElement);
     }
 }

@@ -7,10 +7,10 @@ namespace ToDo.Droid
 {
     public class AndroidViewService : INativeViewService
     {
-        public int[] GetCoordinates(VisualElement visualElement)
+        public int GetAdjustedYPosition(VisualElement visualElement, VisualElement parent)
         {
             // Get the position of the StackLayout
-            var stackLayout = (StackLayout)visualElement.Parent.Parent.Parent;
+            var stackLayout = (StackLayout)parent;
 
             var view = Xamarin.Forms.Platform.Android.Platform.GetRenderer(stackLayout).View;
 
@@ -26,35 +26,15 @@ namespace ToDo.Droid
 
             view.GetLocationOnScreen(coords);
 
-            for (int i = 0; i < 4; i++)
-            {
-                coords[i] = (int)(coords[i] / density);
-            }
+            var gridY = (int)(coords[1] / density);
 
-            coords[1] = coords[1] - stackLayoutY;
-
-            return coords;
+            return gridY - stackLayoutY;
         }
 
-        public int ValidateYPosition(int y, VisualElement grid)
+        public int GetLowestPossibleYPosition(int y, VisualElement grid)
         {
             var height = (int)(DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
 
-            /*
-            // 1. Parent : ViewCell
-            // 2. Parent : ListView
-            // 3. Parent : StackLayout
-            var stackLayout = (StackLayout)grid.Parent.Parent.Parent;
-
-            // 20 : margin (10 above + 10 below)
-            var buttonHeight = (int)stackLayout.Children[2].Bounds.Height + 20;
-            */
-
-            // Edit/Delete row : 60
-            // Done/Pending row : 60
-            // Close button row : 140
-            // +5 to add a little space between the Close icon and the bottom of the screen
-            // Sum : 265
             if (y > (height - ((int)grid.Bounds.Height + 365)))
             {
                 y = height - ((int)grid.Bounds.Height + 365);

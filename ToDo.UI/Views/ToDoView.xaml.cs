@@ -33,7 +33,7 @@ namespace ToDo.UI.Views
 
             DeleteTextGrid.HeightRequest = grid.Height;
 
-            int y = _nativeViewService.GetAdjustedYPosition(grid, (StackLayout)grid.Parent.Parent.Parent);
+            int y = _nativeViewService.GetYPosition(grid, (StackLayout)grid.Parent.Parent.Parent);
 
             // Ensure that the grid won't hang out from the screen
             y = _nativeViewService.GetLowestPossibleYPosition(y, grid);

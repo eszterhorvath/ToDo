@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Acr.UserDialogs;
 using Bogus;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
@@ -20,7 +18,6 @@ namespace ToDo.Core.ViewModels
     {
         private readonly IToDoService _todoService;
         private readonly IMvxNavigationService _navigationService;
-        private readonly IUserDialogs _userDialogService;
 
         private readonly IDisposable _subscription;
 
@@ -31,11 +28,10 @@ namespace ToDo.Core.ViewModels
         public ICommand SearchTextChangedCommand { get; }
         public ICommand FadeBackgroundCloseCommand { get; }
 
-        public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService)
+        public ToDoViewModel(IToDoService todoService, IMvxNavigationService navigationService)
         {
             _todoService = todoService;
             _navigationService = navigationService;
-            _userDialogService = userDialogService;
 
             AddTodoItemCommand = new Command(
                 async () => await AddNewTodo());

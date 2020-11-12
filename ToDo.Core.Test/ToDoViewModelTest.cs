@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Acr.UserDialogs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MvvmCross.Navigation;
-using MvvmCross.Tests;
 using ToDo.Core.Models;
 using ToDo.Core.Services;
 using ToDo.Core.ViewModels;
@@ -22,16 +16,14 @@ namespace ToDo.Core.Test
         private ToDoViewModel _viewModel;
         private Mock<IToDoService> _todoService;
         private Mock<IMvxNavigationService> _navigationService;
-        private Mock<IUserDialogs> _userDialogService;
 
         [TestInitialize]
         public void SetUp()
         {
             _todoService = new Mock<IToDoService>();
             _navigationService = new Mock<IMvxNavigationService>();
-            _userDialogService = new Mock<IUserDialogs>();
 
-            _viewModel = new ToDoViewModel(_todoService.Object, _navigationService.Object, _userDialogService.Object);
+            _viewModel = new ToDoViewModel(_todoService.Object, _navigationService.Object);
         }
 
         [TestMethod]

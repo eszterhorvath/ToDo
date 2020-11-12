@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Rest;
 using Microsoft.Win32.SafeHandles;
+using Plugin.Media.Abstractions;
 using Xamarin.Essentials;
 
 namespace ToDo.Core.Services
@@ -18,7 +19,7 @@ namespace ToDo.Core.Services
         private readonly string _endpoint = "https://westcentralus.api.cognitive.microsoft.com/";
 
         private readonly ComputerVisionClient _client;
-        private (FileResult photo, ImageAnalysis analysis) _imageAnalysis;
+        private (MediaFile photo, ImageAnalysis analysis) _imageAnalysis;
 
         public ComputerVisionService()
         {
@@ -28,11 +29,11 @@ namespace ToDo.Core.Services
             };
         }
 
-        public async Task<string> RecognizeText(FileResult photo)
+        public async Task<string> RecognizeText(MediaFile photo)
         {
             // Read text from stream
             HttpOperationHeaderResponse<ReadInStreamHeaders> response;
-            using (var photoStream = await photo.OpenReadAsync())
+            using (var photoStream = photo.GetStream())
             {
                 response = await _client.ReadInStreamWithHttpMessagesAsync(photoStream);
             }
@@ -66,7 +67,7 @@ namespace ToDo.Core.Services
             return text;
         }
 
-        public async Task<string> GetImageSummary(FileResult photo)
+        public async Task<string> GetImageSummary(MediaFile photo)
         {
             var imageAnalysis = await GetImageAnalysis(photo);
 
@@ -79,35 +80,35 @@ namespace ToDo.Core.Services
             return text;
         }
 
-        public async Task<List<DetectedBrand>> RecognizeBrands(FileResult photo)
+        public async Task<List<DetectedBrand>> RecognizeBrands(MediaFile photo)
         {
             var imageAnalysis = await GetImageAnalysis(photo);
 
             return imageAnalysis.Brands.ToList();
         }
 
-        public async Task<List<FaceDescription>> RecognizeFaces(FileResult photo)
+        public async Task<List<FaceDescription>> RecognizeFaces(MediaFile photo)
         {
             var imageAnalysis = await GetImageAnalysis(photo);
 
             return imageAnalysis.Faces.ToList();
         }
 
-        public async Task<List<DetectedObject>> RecognizeObjects(FileResult photo)
+        public async Task<List<DetectedObject>> RecognizeObjects(MediaFile photo)
         {
             var imageAnalysis = await GetImageAnalysis(photo);
 
             return imageAnalysis.Objects.ToList();
         }
 
-        public async Task<List<ImageTag>> RecognizeTags(FileResult photo)
+        public async Task<List<ImageTag>> RecognizeTags(MediaFile photo)
         {
             var imageAnalysis = await GetImageAnalysis(photo);
 
             return imageAnalysis.Tags.ToList();
         }
 
-        private async Task<ImageAnalysis> GetImageAnalysis(FileResult photo)
+        private async Task<ImageAnalysis> GetImageAnalysis(MediaFile photo)
         {
             if (_imageAnalysis.photo != null && photo.Equals(_imageAnalysis.photo))
             {
@@ -124,7 +125,7 @@ namespace ToDo.Core.Services
             };
 
             ImageAnalysis analysis;
-            using (var photoStream = await photo.OpenReadAsync())
+            using (var photoStream = photo.GetStream())
             {
                 analysis = await _client.AnalyzeImageInStreamAsync(photoStream, features);
             }

@@ -8,6 +8,8 @@ using System.Windows.Input;
 using Acr.UserDialogs;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using ToDo.Core.Models;
 using ToDo.Core.Services;
 using Xamarin.Essentials;
@@ -21,6 +23,7 @@ namespace ToDo.Core.ViewModels
         private readonly IMvxNavigationService _navigationService;
         private readonly IUserDialogs _userDialogService;
         private readonly IComputerVisionService _computerVisionService;
+        private readonly IMediaService _mediaService;
 
         public Models.ToDo ToDoItem { get; set; }
         public ICommand AddTodoItemCommand { get; }
@@ -28,12 +31,14 @@ namespace ToDo.Core.ViewModels
 
         private Stream photoStream;
 
-        public AddViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService, IComputerVisionService computerVisionService)
+        public AddViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService,
+            IComputerVisionService computerVisionService, IMediaService mediaService)
         {
             _todoService = todoService;
             _navigationService = navigationService;
             _userDialogService = userDialogService;
             _computerVisionService = computerVisionService;
+            _mediaService = mediaService;
 
             ToDoItem = new Models.ToDo();
 
@@ -142,9 +147,9 @@ namespace ToDo.Core.ViewModels
         {
             photoStream?.Dispose();
 
-            var photo = await MediaPicker.CapturePhotoAsync();
+            var photo = await _mediaService.CapturePhoto();
 
-            photoStream = await photo.OpenReadAsync();
+            photoStream = photo.GetStream();
             ImageSource = ImageSource.FromStream(() => photoStream);
 
             await RecognizeText(photo);
@@ -155,17 +160,17 @@ namespace ToDo.Core.ViewModels
             await RecognizeFaces(photo);
         }
 
-        internal async Task RecognizeText(FileResult photo)
+        internal async Task RecognizeText(MediaFile photo)
         {
             RecognizedText = await _computerVisionService.RecognizeText(photo);
         }
 
-        internal async Task RecognizeSummary(FileResult photo)
+        internal async Task RecognizeSummary(MediaFile photo)
         {
             RecognizedSummary = await _computerVisionService.GetImageSummary(photo);
         }
 
-        internal async Task RecognizeTags(FileResult photo)
+        internal async Task RecognizeTags(MediaFile photo)
         {
             var list = await _computerVisionService.RecognizeTags(photo);
 
@@ -178,7 +183,7 @@ namespace ToDo.Core.ViewModels
             RecognizedTags = text;
         }
 
-        internal async Task RecognizeObjects(FileResult photo)
+        internal async Task RecognizeObjects(MediaFile photo)
         {
             var list = await _computerVisionService.RecognizeObjects(photo);
 
@@ -192,7 +197,7 @@ namespace ToDo.Core.ViewModels
             RecognizedObjects = text;
         }
 
-        internal async Task RecognizeBrands(FileResult photo)
+        internal async Task RecognizeBrands(MediaFile photo)
         {
             var list = await _computerVisionService.RecognizeBrands(photo);
 
@@ -205,7 +210,7 @@ namespace ToDo.Core.ViewModels
             RecognizedBrands = text;
         }
 
-        internal async Task RecognizeFaces(FileResult photo)
+        internal async Task RecognizeFaces(MediaFile photo)
         {
             var list = await _computerVisionService.RecognizeFaces(photo);
 

@@ -16,41 +16,47 @@
                 <Label Text="Description"/>
                 <Entry x:Name="DescriptionEntry" Text="{Binding ToDoItem.Description, Mode=TwoWay}" />
 
-                <Grid>
+                <Grid Margin="0,10,0,10" BackgroundColor="DarkRed">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
 
-                    <Label Text="Text" FontAttributes="Bold" Grid.Column="0" Grid.Row="0"/>
-                    <Label Grid.Column="0" Grid.Row="1" Text="{Binding RecognizedText, Mode=OneWay}"/>
-                    <Label Text="Summary" FontAttributes="Bold" Grid.Column="0" Grid.Row="2"/>
-                    <Label Grid.Column="0" Grid.Row="3" Text="{Binding RecognizedSummary, Mode=OneWay}"/>
-                    <Label Text="Tags" FontAttributes="Bold" Grid.Column="0" Grid.Row="4"/>
-                    <Label Grid.Column="0" Grid.Row="5" Text="{Binding RecognizedTags, Mode=OneWay}"/>
-                    <Label Text="Objects" FontAttributes="Bold" Grid.Column="0" Grid.Row="6"/>
-                    <Label Grid.Column="0" Grid.Row="7" Text="{Binding RecognizedObjects, Mode=OneWay}"/>
-                    <Label Text="Brands" FontAttributes="Bold" Grid.Column="0" Grid.Row="8"/>
-                    <Label Grid.Column="0" Grid.Row="9" Text="{Binding RecognizedBrands, Mode=OneWay}"/>
-                    <Label Text="Faces" FontAttributes="Bold" Grid.Column="0" Grid.Row="10"/>
-                    <Label Grid.Column="0" Grid.Row="11" Text="{Binding RecognizedFaces, Mode=OneWay}"/>
+                    <Grid Grid.Column="0" BackgroundColor="DeepPink">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <Image Grid.Column="1" Grid.RowSpan="12" Grid.Row="0" Source="{Binding ImageSource, Mode=OneWay}"/>
+                        <Label Text="Text" FontAttributes="Bold" Grid.Row="0" BackgroundColor="Yellow"/>
+                        <Label Grid.Row="1" Text="{Binding RecognizedText, Mode=OneWay}" LineBreakMode="WordWrap" BackgroundColor="Blue"/>
+                        <Label Text="Summary" FontAttributes="Bold" Grid.Row="2" BackgroundColor="Brown"/>
+                        <Label Grid.Row="3" Text="{Binding RecognizedSummary, Mode=OneWay}" LineBreakMode="WordWrap" BackgroundColor="IndianRed"/>
+                        <Label Text="Tags" FontAttributes="Bold" Grid.Row="4" BackgroundColor="BurlyWood"/>
+                        <Label Grid.Row="5" Text="{Binding RecognizedTags, Mode=OneWay}" LineBreakMode="WordWrap" BackgroundColor="Teal"/>
+                        <Label Text="Objects" FontAttributes="Bold" Grid.Row="6" BackgroundColor="Plum"/>
+                        <Label Grid.Row="7" Text="{Binding RecognizedObjects, Mode=OneWay}" LineBreakMode="WordWrap" BackgroundColor="DarkTurquoise"/>
+                        <Label Text="Brands" FontAttributes="Bold" Grid.Row="8" BackgroundColor="DarkBlue"/>
+                        <Label Grid.Row="9" Text="{Binding RecognizedBrands, Mode=OneWay}" LineBreakMode="WordWrap" BackgroundColor="Firebrick"/>
+                        <Label Text="Faces" FontAttributes="Bold" Grid.Row="10" BackgroundColor="Aqua"/>
+                        <Label Grid.Row="11" Text="{Binding RecognizedFaces, Mode=OneWay}" LineBreakMode="WordWrap" BackgroundColor="OrangeRed"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1" BackgroundColor="Green">
+                        <Image Source="{Binding ImageSource, Mode=OneWay}" VerticalOptions="Center"/>
+                    </Grid>
                 </Grid>
+
                 <Button x:Name="CameraButton" Command="{Binding TakePhotoCommand, Mode=OneWay}" Text="Take a photo" Margin="10"/>
 
                 <Button x:Name="AddButton" Command="{Binding AddTodoItemCommand, Mode=OneWay}" Text="Add" Margin="10"/>

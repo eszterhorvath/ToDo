@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -25,6 +26,8 @@ namespace ToDo.Core.ViewModels
         public ICommand AddTodoItemCommand { get; }
         public ICommand TakePhotoCommand { get; }
 
+        private Stream photoStream;
+
         public AddViewModel(IToDoService todoService, IMvxNavigationService navigationService, IUserDialogs userDialogService, IComputerVisionService computerVisionService)
         {
             _todoService = todoService;
@@ -36,6 +39,11 @@ namespace ToDo.Core.ViewModels
 
             AddTodoItemCommand = new Command(async () => await AddTodo());
             TakePhotoCommand = new Command(async () => await TakePhoto());
+        }
+
+        public override void ViewDisappeared()
+        {
+            photoStream?.Dispose();
         }
 
         private ImageSource _imageSource;
@@ -132,8 +140,11 @@ namespace ToDo.Core.ViewModels
 
         internal async Task TakePhoto()
         {
+            photoStream?.Dispose();
+
             var photo = await MediaPicker.CapturePhotoAsync();
-            var photoStream = await photo.OpenReadAsync();
+
+            photoStream = await photo.OpenReadAsync();
             ImageSource = ImageSource.FromStream(() => photoStream);
 
             await RecognizeText(photo);

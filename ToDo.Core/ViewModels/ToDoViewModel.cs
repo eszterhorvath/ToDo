@@ -65,7 +65,6 @@ namespace ToDo.Core.ViewModels
 
         public override async void ViewAppeared()
         {
-            base.ViewAppeared();
             await LoadTodos();
         }
 

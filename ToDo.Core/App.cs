@@ -16,6 +16,8 @@ namespace ToDo.Core
         {
             string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Todos.db3");
             Mvx.IoCProvider.RegisterSingleton<IToDoService>(new ToDoService(dbPath));
+            Mvx.IoCProvider.RegisterSingleton<IComputerVisionService>(new ComputerVisionService());
+            Mvx.IoCProvider.RegisterSingleton<IMediaService>(new MediaService());
             Mvx.IoCProvider.RegisterSingleton(UserDialogs.Instance);
 
             RegisterAppStart<ToDoViewModel>();

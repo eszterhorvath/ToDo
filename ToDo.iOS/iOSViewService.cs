@@ -7,7 +7,7 @@ namespace ToDo.iOS
 {
     public class iOSViewService : INativeViewService
     {
-        public int GetAdjustedYPosition(VisualElement visualElement, VisualElement parent)
+        public int GetYPosition(VisualElement visualElement, VisualElement parent)
         {
             // Get the position of the StackLayout
             var stackLayout = (StackLayout)parent;

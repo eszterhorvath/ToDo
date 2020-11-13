@@ -12,7 +12,7 @@ namespace ToDo.UWP
 {
     public class UWPViewService : INativeViewService
     {
-        public int GetAdjustedYPosition(VisualElement visualElement, VisualElement parent)
+        public int GetYPosition(VisualElement visualElement, VisualElement parent)
         {
             // TODO
 

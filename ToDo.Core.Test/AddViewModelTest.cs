@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.IO;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MvvmCross.Navigation;
-using MvvmCross.ViewModels;
+using Plugin.Media.Abstractions;
 using ToDo.Core.Models;
 using ToDo.Core.Services;
 using ToDo.Core.ViewModels;
+using Xamarin.Essentials;
 
 namespace ToDo.Core.Test
 {
@@ -22,6 +22,8 @@ namespace ToDo.Core.Test
         private Mock<IToDoService> _todoService;
         private Mock<IMvxNavigationService> _navigationService;
         private Mock<IUserDialogs> _userDialogService;
+        private Mock<IComputerVisionService> _computerVisionService;
+        private Mock<IMediaService> _mediaService;
 
         [TestInitialize]
         public void SetUp()
@@ -29,8 +31,11 @@ namespace ToDo.Core.Test
             _todoService = new Mock<IToDoService>();
             _navigationService = new Mock<IMvxNavigationService>();
             _userDialogService = new Mock<IUserDialogs>();
+            _computerVisionService = new Mock<IComputerVisionService>();
+            _mediaService = new Mock<IMediaService>();
 
-            _viewModel = new AddViewModel(_todoService.Object, _navigationService.Object, _userDialogService.Object);
+            _viewModel = new AddViewModel(_todoService.Object, _navigationService.Object, _userDialogService.Object,
+                _computerVisionService.Object, _mediaService.Object);
         }
 
         [TestMethod]
@@ -84,6 +89,35 @@ namespace ToDo.Core.Test
 
 
             Assert.AreEqual(State.Pending, todo.State);
+        }
+
+        [TestMethod]
+        public async Task WhenTakingAPicture_PhotoAndAnalysisAppearsOnScreen()
+        {
+            // ARRANGE
+            var testPhoto = new MediaFile("", () => new MemoryStream(new byte[] {}));
+            _mediaService.Setup(s => s.CapturePhoto()).ReturnsAsync(testPhoto);
+
+            _computerVisionService.Setup(s => s.GetImageSummary(testPhoto)).ReturnsAsync("Recognized Summary");
+            _computerVisionService.Setup(s => s.RecognizeText(testPhoto)).ReturnsAsync("Recognized Text");
+            _computerVisionService.Setup(s => s.RecognizeTags(testPhoto)).ReturnsAsync(new List<ImageTag>());
+            _computerVisionService.Setup(s => s.RecognizeObjects(testPhoto)).ReturnsAsync(new List<DetectedObject>());
+            _computerVisionService.Setup(s => s.RecognizeBrands(testPhoto)).ReturnsAsync(new List<DetectedBrand>());
+            _computerVisionService.Setup(s => s.RecognizeFaces(testPhoto)).ReturnsAsync(new List<FaceDescription>());
+
+            // ACT
+            await _viewModel.TakePhoto();
+
+            // ASSERT
+            _mediaService.Verify(s => s.CapturePhoto(), Times.Once());
+            Assert.IsNotNull(_viewModel.ImageSource);
+
+            _computerVisionService.Verify(s => s.GetImageSummary(testPhoto), Times.Once());
+            _computerVisionService.Verify(s => s.RecognizeText(testPhoto), Times.Once());
+            _computerVisionService.Verify(s => s.RecognizeTags(testPhoto), Times.Once());
+            _computerVisionService.Verify(s => s.RecognizeObjects(testPhoto), Times.Once());
+            _computerVisionService.Verify(s => s.RecognizeBrands(testPhoto), Times.Once());
+            _computerVisionService.Verify(s => s.RecognizeFaces(testPhoto), Times.Once());
         }
     }
 }

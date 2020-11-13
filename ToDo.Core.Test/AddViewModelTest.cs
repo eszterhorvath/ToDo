@@ -92,7 +92,7 @@ namespace ToDo.Core.Test
         }
 
         [TestMethod]
-        public async Task WhenTakingAPicture_PhotoAppearsOnScreen()
+        public async Task WhenTakingAPicture_PhotoAndAnalysisAppearsOnScreen()
         {
             // ARRANGE
             var testPhoto = new MediaFile("", () => new MemoryStream(new byte[] {}));
@@ -111,26 +111,7 @@ namespace ToDo.Core.Test
             // ASSERT
             _mediaService.Verify(s => s.CapturePhoto(), Times.Once());
             Assert.IsNotNull(_viewModel.ImageSource);
-        }
 
-        [TestMethod]
-        public async Task WhenTakingAPicture_AnalyzesPhoto()
-        {
-            // ARRANGE
-            var testPhoto = new MediaFile("", () => new MemoryStream(new byte[] { }));
-            _mediaService.Setup(s => s.CapturePhoto()).ReturnsAsync(testPhoto);
-
-            _computerVisionService.Setup(s => s.GetImageSummary(testPhoto)).ReturnsAsync("Recognized Summary");
-            _computerVisionService.Setup(s => s.RecognizeText(testPhoto)).ReturnsAsync("Recognized Text");
-            _computerVisionService.Setup(s => s.RecognizeTags(testPhoto)).ReturnsAsync(new List<ImageTag>());
-            _computerVisionService.Setup(s => s.RecognizeObjects(testPhoto)).ReturnsAsync(new List<DetectedObject>());
-            _computerVisionService.Setup(s => s.RecognizeBrands(testPhoto)).ReturnsAsync(new List<DetectedBrand>());
-            _computerVisionService.Setup(s => s.RecognizeFaces(testPhoto)).ReturnsAsync(new List<FaceDescription>());
-
-            // ACT
-            await _viewModel.TakePhoto();
-
-            // ASSERT
             _computerVisionService.Verify(s => s.GetImageSummary(testPhoto), Times.Once());
             _computerVisionService.Verify(s => s.RecognizeText(testPhoto), Times.Once());
             _computerVisionService.Verify(s => s.RecognizeTags(testPhoto), Times.Once());
